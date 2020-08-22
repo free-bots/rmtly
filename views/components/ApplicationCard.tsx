@@ -30,7 +30,7 @@ export class ApplicationCard extends Component<any, any> {
           onPress={this.props?.onPress(this.props?.application)}
           onLongPress={this.props?.onLongPress(this.props?.application)}>
           <View>
-            <Image source={require('../../icon.png')} style={styles.image} resizeMode={'cover'} width={5} height={5}/>
+            {/*<Image source={require('../../icon.png')} style={styles.image} resizeMode={'cover'} width={5} height={5}/>*/}
             {this.props?.loading && <ProgressBarAndroid />}
           </View>
         </Pressable>
