@@ -9,29 +9,50 @@ import {
   SafeAreaView,
   StatusBar,
   StyleSheet,
+  Text,
   TextInput,
-  ToolbarAndroid,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import {ApplicationCard} from '../components/ApplicationCard';
 import {Actions} from 'react-native-router-flux';
+import {Modalize} from 'react-native-modalize';
 
 export class Applications extends Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
       loading: false,
-      applications: Array(5).fill(''),
+      applications: Array(5).fill({
+        id: 0,
+        name: 'test',
+      }),
     };
   }
 
-  onPress = () => (application: any) => {
+  componentDidMount() {
+    this.closeApplicationModal();
+  }
+
+  onPress = (application: any) => () => {
     console.log('press');
     console.log(application);
   };
 
-  onLongPress = (application: any) => {
+  onLongPress = (application: any) => () => {
     console.log('long press');
+    console.log(application);
+    this.openApplicationModal();
+  };
+
+  private modalizeRef = React.createRef<Modalize>();
+
+  openApplicationModal = () => {
+    this.modalizeRef.current?.open();
+  };
+
+  closeApplicationModal = () => {
+    this.modalizeRef.current?.close();
   };
 
   render() {
@@ -43,12 +64,19 @@ export class Applications extends Component<any, any> {
             <TextInput style={styles.search} />
             <FlatList
               data={this.state.applications}
-              renderItem={(item) => (
-                <ApplicationCard
-                  application={item}
-                  onPress={this.onPress}
-                  onLongPress={this.onLongPress}
-                />
+              renderItem={(renderInfo) => (
+                <TouchableWithoutFeedback
+                  onPress={this.onPress(renderInfo.item)}
+                  onLongPress={this.onLongPress(renderInfo.item)}>
+                  <View
+                    style={{
+                      flex: 1,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <ApplicationCard application={renderInfo.item} />
+                  </View>
+                </TouchableWithoutFeedback>
               )}
               horizontal={false}
               numColumns={2}
@@ -82,6 +110,11 @@ export class Applications extends Component<any, any> {
                 Actions.connection();
               }}
             />
+            <Modalize ref={this.modalizeRef}>
+              {this.state.applications.map((application: any) => (
+                <Text>{application.name}</Text>
+              ))}
+            </Modalize>
           </View>
         </SafeAreaView>
       </>
