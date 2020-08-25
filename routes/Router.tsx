@@ -7,6 +7,7 @@ export const Routes = () => (
   <Router>
     <Scene key="root">
       <Scene
+        hideNavBar={true}
         key="application"
         component={Applications}
         title="Applications"

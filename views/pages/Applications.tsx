@@ -22,6 +22,7 @@ export class Applications extends Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
+      open: false,
       loading: false,
       applications: Array(5).fill({
         id: 0,
@@ -61,7 +62,6 @@ export class Applications extends Component<any, any> {
         <StatusBar barStyle="dark-content" backgroundColor={'#7e23e8'} />
         <SafeAreaView>
           <View style={styles.body}>
-            <TextInput style={styles.search} />
             <FlatList
               data={this.state.applications}
               renderItem={(renderInfo) => (
@@ -104,13 +104,29 @@ export class Applications extends Component<any, any> {
                 />
               }
             />
-            <Button
-              title={'to connection'}
-              onPress={() => {
-                Actions.connection();
+            {!this.state.open && (
+              <>
+                <TextInput style={styles.search} />
+                <Button
+                  title={'to connection'}
+                  onPress={() => {
+                    Actions.connection();
+                  }}
+                />
+              </>
+            )}
+            <Modalize
+              onOpen={() => {
+                this.setState({
+                  open: true,
+                });
               }}
-            />
-            <Modalize ref={this.modalizeRef}>
+              onClose={() => {
+                this.setState({open: false});
+              }}
+              ref={this.modalizeRef}
+              adjustToContentHeight={true}
+              panGestureComponentEnabled={true}>
               {this.state.applications.map((application: any) => (
                 <Text>{application.name}</Text>
               ))}
@@ -133,8 +149,9 @@ const styles = StyleSheet.create({
     paddingRight: PixelRatio.getPixelSizeForLayoutSize(5),
     paddingTop: PixelRatio.getPixelSizeForLayoutSize(2),
     paddingBottom: PixelRatio.getPixelSizeForLayoutSize(2),
-    backgroundColor: '#686868',
-    borderColor: '#000000',
+    backgroundColor: '#d4d4d4',
+    borderColor: '#bfbfbf',
+    elevation: 10,
     borderWidth: 3,
     borderRadius: PixelRatio.getPixelSizeForLayoutSize(10),
   },

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {
+  AsyncStorage,
   Button,
   SafeAreaView,
   StatusBar,
@@ -12,6 +13,23 @@ import {
 // todo settings page for the connection to the server
 
 export class Connection extends Component<any, any> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      url: '',
+      token: '',
+    };
+  }
+
+  async componentWillMount() {
+    const url = await AsyncStorage.getItem('URL');
+    const token = await AsyncStorage.getItem('TOKEN');
+    this.setState({
+      url,
+      token,
+    });
+  }
+
   render() {
     return (
       <>
