@@ -1,5 +1,11 @@
 // todo list all the applications here
 
+// todo fetch with hook
+// new bottom sheet ? https://github.com/NYSamnang/react-native-raw-bottom-sheet
+// qr scanner
+// async storage save token / server / port ...
+// https://github.com/moaazsidat/react-native-qrcode-scanner
+
 import React, {Component} from 'react';
 import {
   Button,
@@ -17,6 +23,8 @@ import {
 import {ApplicationCard} from '../components/ApplicationCard';
 import {Actions} from 'react-native-router-flux';
 import {Modalize} from 'react-native-modalize';
+import {IconResponse} from '../../models/Response';
+import {ApplicationEntry} from '../../models/ApplicationEntry';
 
 export class Applications extends Component<any, any> {
   constructor(props: any) {
@@ -26,13 +34,75 @@ export class Applications extends Component<any, any> {
       loading: false,
       applications: Array(5).fill({
         id: 0,
-        name: 'test',
+        name: '',
       }),
     };
   }
 
   componentDidMount() {
     this.closeApplicationModal();
+    this.fetchApplications();
+  }
+
+  fetchApplications() {
+    const headers = new Headers();
+    headers.append(
+      'Authorization',
+      'Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJEZXZpY2VJZCI6IklEIiwiZXhwIjoxNjA1NjI3NjE1fQ.du8tOqJ_r6Ra44Z5s1FZudIMR86owW83RY-hPDpkwXZTRKbFwZO9jcPQTFPb7KYkFJAPv2v9JAk1EnWWCwz2_A',
+    );
+    fetch('http://10.0.2.2:3000/applications', {
+      headers: headers,
+    })
+      .then((response) => response.json())
+      .then(
+        (json: ApplicationEntry[]) => {
+          this.setState({
+            applications: json,
+          });
+
+          // json.map(async (application) => {
+          //   const icon = await this.fetchIcon(application.id).then(
+          //     (response) => response.iconBase64,
+          //   );
+          //   application.icon = icon;
+          //   return application;
+          // });
+        },
+
+        // const applications = (json as ApplicationEntry[]).map((application) => {
+        //   return this.fetchIcon(application.id)
+        //     .then((icon) => {
+        //       application.icon = icon?.iconBase64;
+        //       return application;
+        //     })
+        //     .catch((error) => {
+        //       console.error(error);
+        //       return application;
+        //     });
+        // });
+        // Promise.all(applications)
+        //   .then((applicationsEntries) => {
+        //     this.setState({
+        //       applications: applicationsEntries,
+        //     });
+        //   })
+        //   .catch((error) => console.error(error));
+      )
+      .catch((error) => console.error(error));
+  }
+
+  fetchIcon(applicationId: string): Promise<IconResponse> {
+    const headers = new Headers();
+    headers.append(
+      'Authorization',
+      'Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJEZXZpY2VJZCI6IklEIiwiZXhwIjoxNjA1NjI3NjE1fQ.du8tOqJ_r6Ra44Z5s1FZudIMR86owW83RY-hPDpkwXZTRKbFwZO9jcPQTFPb7KYkFJAPv2v9JAk1EnWWCwz2_A',
+    );
+    return fetch(`http://10.0.2.2:3000/applications/${applicationId}/icon`, {
+      headers: headers,
+    })
+      .then((response) => response.json())
+      .then((json) => json as IconResponse)
+      .catch((error) => console.error(error)) as Promise<IconResponse>;
   }
 
   onPress = (application: any) => () => {
