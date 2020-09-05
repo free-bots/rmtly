@@ -1,32 +1,38 @@
 // todo display a singe application
 
-import React, {Component} from 'react';
-import {PixelRatio, ProgressBarAndroid, StyleSheet, View,} from 'react-native';
+import React from 'react';
+import {
+  Image,
+  PixelRatio,
+  ProgressBarAndroid,
+  StyleSheet,
+  View,
+} from 'react-native';
 
-export class ApplicationCard extends Component<any, any> {
-  constructor(props: any) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <View
-        style={{
-          flex: 1,
-          alignSelf: 'center',
-          justifyContent: 'center',
-          elevation: 10,
-        }}>
-        <View style={styles.card}>
-          <View>
-            {/*<Image source={require('../../icon.png')} style={styles.image} resizeMode={'cover'} width={5} height={5}/>*/}
-            {this.props?.loading && <ProgressBarAndroid />}
-          </View>
+export const ApplicationCard = ({loading, icon}: any) => {
+  return (
+    <View
+      style={{
+        flex: 1,
+        alignSelf: 'center',
+        justifyContent: 'center',
+        elevation: 10,
+      }}>
+      <View style={styles.card}>
+        <View>
+          <Image
+            source={icon}
+            style={styles.image}
+            resizeMode={'cover'}
+            width={5}
+            height={5}
+          />
+          {loading && <ProgressBarAndroid />}
         </View>
       </View>
-    );
-  }
-}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   card: {

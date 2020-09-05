@@ -8,6 +8,7 @@
 
 import React, {Component} from 'react';
 import {
+  Alert,
   Button,
   FlatList,
   PixelRatio,
@@ -41,7 +42,7 @@ export class Applications extends Component<any, any> {
 
   componentDidMount() {
     this.closeApplicationModal();
-    this.fetchApplications();
+    // this.fetchApplications();
   }
 
   fetchApplications() {
@@ -50,7 +51,7 @@ export class Applications extends Component<any, any> {
       'Authorization',
       'Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJEZXZpY2VJZCI6IklEIiwiZXhwIjoxNjA1NjI3NjE1fQ.du8tOqJ_r6Ra44Z5s1FZudIMR86owW83RY-hPDpkwXZTRKbFwZO9jcPQTFPb7KYkFJAPv2v9JAk1EnWWCwz2_A',
     );
-    fetch('http://10.0.2.2:3000/applications', {
+    fetch('http://10.0.2.2:3000/applications?icon=true', {
       headers: headers,
     })
       .then((response) => response.json())
@@ -59,6 +60,8 @@ export class Applications extends Component<any, any> {
           this.setState({
             applications: json,
           });
+
+          // todo merge in server the images -> appication.icon -> application.iconBase64
 
           // json.map(async (application) => {
           //   const icon = await this.fetchIcon(application.id).then(
@@ -88,7 +91,10 @@ export class Applications extends Component<any, any> {
         //   })
         //   .catch((error) => console.error(error));
       )
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        Alert.alert('fetching applications failed');
+      });
   }
 
   fetchIcon(applicationId: string): Promise<IconResponse> {
@@ -126,14 +132,28 @@ export class Applications extends Component<any, any> {
     this.modalizeRef.current?.close();
   };
 
+  onRefresh = () => {
+    this.setState({
+      loading: true,
+    });
+    // todo fetch again
+    // todo set loading false
+    setTimeout(() => {
+      this.setState({
+        loading: false,
+      });
+    }, 5000);
+  };
+
   render() {
+    const {loading, applications} = this.state;
     return (
       <>
         <StatusBar barStyle="dark-content" backgroundColor={'#7e23e8'} />
         <SafeAreaView>
           <View style={styles.body}>
             <FlatList
-              data={this.state.applications}
+              data={applications}
               renderItem={(renderInfo) => (
                 <TouchableWithoutFeedback
                   onPress={this.onPress(renderInfo.item)}
@@ -144,7 +164,10 @@ export class Applications extends Component<any, any> {
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}>
-                    <ApplicationCard application={renderInfo.item} />
+                    <ApplicationCard
+                      application={renderInfo.item}
+                      icon={require('../../icon.png')}
+                    />
                   </View>
                 </TouchableWithoutFeedback>
               )}
@@ -160,17 +183,8 @@ export class Applications extends Component<any, any> {
               }}
               refreshControl={
                 <RefreshControl
-                  refreshing={this.state.loading}
-                  onRefresh={() => {
-                    this.setState({
-                      loading: true,
-                    });
-                    setTimeout(() => {
-                      this.setState({
-                        loading: false,
-                      });
-                    }, 5000);
-                  }}
+                  refreshing={loading}
+                  onRefresh={this.onRefresh}
                 />
               }
             />
@@ -219,6 +233,7 @@ const styles = StyleSheet.create({
     paddingRight: PixelRatio.getPixelSizeForLayoutSize(5),
     paddingTop: PixelRatio.getPixelSizeForLayoutSize(2),
     paddingBottom: PixelRatio.getPixelSizeForLayoutSize(2),
+    marginBottom: PixelRatio.getPixelSizeForLayoutSize(2),
     backgroundColor: '#d4d4d4',
     borderColor: '#bfbfbf',
     elevation: 10,
