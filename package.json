@@ -10,8 +10,10 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
+    "@react-native-community/progress-bar-android": "^1.0.3",
     "react": "16.13.1",
     "react-native": "0.63.2",
+    "react-native-actions-sheet": "^0.3.5",
     "react-native-camera": "^3.37.0",
     "react-native-gesture-handler": "^1.7.0",
     "react-native-modalize": "^2.0.5",

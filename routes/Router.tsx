@@ -1,7 +1,7 @@
 import {Router, Scene} from 'react-native-router-flux';
-import {Applications} from '../views/pages/Applications';
 import {Connection} from '../views/pages/settings/Connection';
 import React from 'react';
+import Home from '../views/pages/Home';
 
 export const Routes = () => (
   <Router>
@@ -9,7 +9,7 @@ export const Routes = () => (
       <Scene
         hideNavBar={true}
         key="application"
-        component={Applications}
+        component={Home}
         title="Applications"
         initial={true}
       />

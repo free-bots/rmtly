@@ -1,54 +1,24 @@
-// todo display a singe application
-
 import React from 'react';
-import {
-  Image,
-  PixelRatio,
-  ProgressBarAndroid,
-  StyleSheet,
-  View,
-} from 'react-native';
+import {ActivityIndicator, Dimensions, PixelRatio, Text, View} from 'react-native';
 
-export const ApplicationCard = ({loading, icon}: any) => {
+export const ApplicationCard = ({name, icon}: {name: string; icon: string}) => {
+  const loading = true;
   return (
     <View
       style={{
-        flex: 1,
-        alignSelf: 'center',
-        justifyContent: 'center',
+        backgroundColor: '#fff',
+        borderRadius: 10,
         elevation: 10,
+        margin: 5,
+        padding: 10,
+        height: 120,
+        width: 120,
+        // justifyContent: 'center',
+        // alignItems: 'center',
       }}>
-      <View style={styles.card}>
-        <View>
-          <Image
-            source={icon}
-            style={styles.image}
-            resizeMode={'cover'}
-            width={5}
-            height={5}
-          />
-          {loading && <ProgressBarAndroid />}
-        </View>
-      </View>
+      {/*<Image source={undefined}/>*/}
+      <Text>{name}</Text>
+      {loading && <ActivityIndicator size={'large'} color={'green'} />}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  card: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: PixelRatio.getPixelSizeForLayoutSize(50),
-    width: PixelRatio.getPixelSizeForLayoutSize(50),
-    backgroundColor: '#9857fd',
-    borderColor: '#7438d4',
-    borderWidth: 5,
-    borderRadius: PixelRatio.getPixelSizeForLayoutSize(10),
-    margin: 5,
-  },
-  image: {
-    height: 100,
-    width: 100,
-  },
-});
