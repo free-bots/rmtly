@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {ActivityIndicator, Image, Text, View} from 'react-native';
+import {FallbackImage} from './FallbackImage';
 
 export const ApplicationCard = ({
   name,
@@ -10,7 +11,6 @@ export const ApplicationCard = ({
   icon: string;
   loading: boolean;
 }) => {
-  const [imageSource, setImageSource] = useState<{uri: any}>({uri: icon});
   return (
     <View
       style={{
@@ -25,14 +25,7 @@ export const ApplicationCard = ({
         // justifyContent: 'center',
         // alignItems: 'center',
       }}>
-      <Image
-        source={imageSource}
-        style={{width: 50, height: 50}}
-        onError={() => {
-          // todo default icon
-          // setImageSource({uri: ''});
-        }}
-      />
+      <FallbackImage url={icon} style={{height: 50, width: 50, alignSelf: 'center'}} />
       <Text>{name}</Text>
       {loading && (
         <ActivityIndicator

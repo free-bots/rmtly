@@ -1,16 +1,16 @@
 import React, {Component} from 'react';
-import {SafeAreaView, StatusBar, Text, View} from 'react-native';
-import ActionSheet from 'react-native-actions-sheet';
+import {SafeAreaView, StatusBar, View} from 'react-native';
 import {ApplicationList} from '../components/ApplicationList';
 import {ApplicationEntry} from '../../models/ApplicationEntry';
+import {ApplicationBottomSheet} from '../components/ApplicationBottomSheet';
 
 export default class Home extends Component<any, any> {
-  actionSheetRef: any = React.createRef<ActionSheet>();
+  applicationButtonSheetRef: any = React.createRef<ApplicationBottomSheet>();
 
   componentDidMount() {}
 
   openApplicationDetails = (application: ApplicationEntry) => {
-    this.actionSheetRef.current?.setModalVisible();
+    this.applicationButtonSheetRef.current?.open(application);
   };
 
   render() {
@@ -75,17 +75,7 @@ export default class Home extends Component<any, any> {
               />
             </View>
           </View>
-          <ActionSheet
-            ref={this.actionSheetRef}
-            gestureEnabled={true}
-            initialOffsetFromBottom={500}>
-            <View
-              style={{
-                height: 500,
-              }}>
-              <Text>hi</Text>
-            </View>
-          </ActionSheet>
+          <ApplicationBottomSheet ref={this.applicationButtonSheetRef} />
         </SafeAreaView>
       </>
     );
