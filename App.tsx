@@ -11,16 +11,16 @@
 import React from 'react';
 import {Routes} from './routes/Router';
 import {ThemeContextProvider} from './contexts/ThemeContext';
-import {ApplicationContextProvider} from './contexts/ApplicationContext';
+import {ApplicationsContextProvider} from './contexts/ApplicationsContext';
 
 declare const global: {HermesInternal: null | {}};
 
 const App = () => {
   return (
     <ThemeContextProvider>
-      <ApplicationContextProvider>
+      <ApplicationsContextProvider>
         <Routes />
-      </ApplicationContextProvider>
+      </ApplicationsContextProvider>
     </ThemeContextProvider>
   );
 };

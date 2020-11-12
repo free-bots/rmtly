@@ -1,8 +1,16 @@
-import React from 'react';
-import {ActivityIndicator, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {ActivityIndicator, Image, Text, View} from 'react-native';
 
-export const ApplicationCard = ({name, icon}: {name: string; icon: string}) => {
-  const loading = true;
+export const ApplicationCard = ({
+  name,
+  icon,
+  loading,
+}: {
+  name: string;
+  icon: string;
+  loading: boolean;
+}) => {
+  const [imageSource, setImageSource] = useState<{uri: any}>({uri: icon});
   return (
     <View
       style={{
@@ -17,8 +25,15 @@ export const ApplicationCard = ({name, icon}: {name: string; icon: string}) => {
         // justifyContent: 'center',
         // alignItems: 'center',
       }}>
-      {/*<Image source={undefined}/>*/}
-      <Text>Name:{name}</Text>
+      <Image
+        source={imageSource}
+        style={{width: 50, height: 50}}
+        onError={() => {
+          // todo default icon
+          // setImageSource({uri: ''});
+        }}
+      />
+      <Text>{name}</Text>
       {loading && (
         <ActivityIndicator
           size={'large'}
