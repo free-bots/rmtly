@@ -55,6 +55,7 @@ export const ApplicationList = ({
       .catch((error) => {
         console.error(error);
         setRefreshing(false);
+        setApplications([]);
       });
   };
 
