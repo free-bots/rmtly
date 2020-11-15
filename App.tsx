@@ -9,17 +9,27 @@
  */
 
 import React from 'react';
-import {Routes} from './routes/Router';
 import {ThemeContextProvider} from './contexts/ThemeContext';
 import {ApplicationsContextProvider} from './contexts/ApplicationsContext';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import {NavigationContainer} from '@react-navigation/native';
+import Home from './views/pages/Home';
+import {Connection} from './views/pages/settings/Connection';
 
 declare const global: {HermesInternal: null | {}};
+
+const Drawer = createDrawerNavigator();
 
 const App = () => {
   return (
     <ThemeContextProvider>
       <ApplicationsContextProvider>
-        <Routes />
+        <NavigationContainer>
+          <Drawer.Navigator initialRouteName="Home">
+            <Drawer.Screen name="Applications" component={Home} />
+            <Drawer.Screen name="Connection" component={Connection} />
+          </Drawer.Navigator>
+        </NavigationContainer>
       </ApplicationsContextProvider>
     </ThemeContextProvider>
   );
