@@ -6,32 +6,28 @@ import {ExecuteRequest} from '../models/Request.model';
 
 export default {
   getAllApplications(): Promise<ApplicationEntry[]> {
-    return RestService.get<ApplicationEntry[]>(
-      UrlBuilder.getInstance().append('applications').create(),
-    );
+    const url = UrlBuilder.getInstance().append('applications').create();
+    return RestService.get<ApplicationEntry[]>(url);
   },
 
   getApplicationById(applicationId: string): Promise<ApplicationEntry> {
-    return RestService.get<ApplicationEntry>(
-      UrlBuilder.getInstance()
-        .append('applications')
-        .append(applicationId)
-        .create(),
-    );
+    const url = UrlBuilder.getInstance()
+      .append('applications')
+      .append(applicationId)
+      .create();
+    return RestService.get<ApplicationEntry>(url);
   },
 
   executeApplication(
     applicationId: string,
     request: ExecuteRequest,
   ): Promise<ExecuteResponse> {
-    return RestService.post<ExecuteResponse>(
-      UrlBuilder.getInstance()
-        .append('applications')
-        .append(applicationId)
-        .append('execute')
-        .create(),
-      request,
-    );
+    const url = UrlBuilder.getInstance()
+      .append('applications')
+      .append(applicationId)
+      .append('execute')
+      .create();
+    return RestService.post<ExecuteResponse>(url, request);
   },
 
   getIcon(applicationId: string): string {

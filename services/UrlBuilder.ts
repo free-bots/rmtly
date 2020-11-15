@@ -1,7 +1,7 @@
-export class UrlBuilder {
-  private static readonly BASE_URL = 'http://10.0.2.2:3000';
+import {ConfigService} from './Config.service';
 
-  private static instance: UrlBuilder;
+export class UrlBuilder {
+  private BASE_URL = 'http://10.0.2.2:3000';
 
   private url: string = '';
 
@@ -12,8 +12,14 @@ export class UrlBuilder {
     return this;
   }
 
-  public create(): string {
-    return `${UrlBuilder.BASE_URL}${this.url}`;
+  public create(customBaseUrl?: string): string {
+    const configUrl = ConfigService.getUrl();
+    if (configUrl) {
+      console.log(configUrl);
+      this.BASE_URL = configUrl;
+    }
+
+    return `${customBaseUrl || this.BASE_URL}${this.url}`;
   }
 
   public static getInstance(): UrlBuilder {

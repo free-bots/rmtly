@@ -1,6 +1,5 @@
-import React, {Component} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  AsyncStorage,
   Button,
   SafeAreaView,
   StatusBar,
@@ -9,53 +8,73 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import {ConfigService} from '../../../services/Config.service';
+import ConnectionService from './../../../services/Connection.service';
 
-// todo settings page for the connection to the server
+export const Connection = () => {
+  const [url, setUrl] = useState<string>();
+  const [token, setToken] = useState<string>();
 
-export class Connection extends Component<any, any> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      url: '',
-      token: '',
-    };
-  }
+  useEffect(() => {
+    const configUrl = ConfigService.getUrl();
+    if (configUrl) {
+      setUrl(configUrl);
+    }
 
-  async componentWillMount() {
-    const url = await AsyncStorage.getItem('URL');
-    const token = await AsyncStorage.getItem('TOKEN');
-    this.setState({
-      url,
-      token,
-    });
-  }
+    const configToken = ConfigService.getToken();
+    if (configToken) {
+      setToken(configToken);
+    }
+  }, []);
 
-  render() {
-    return (
-      <>
-        <StatusBar barStyle="dark-content" backgroundColor={'#7e23e8'} />
-        <SafeAreaView>
-          <View style={styles.body}>
-            <Text>Address</Text>
-            <TextInput />
-            <Button
-              title={'Scan QR'}
-              onPress={() => {
-                console.log('todo open qr scanner');
-              }}
-            />
-            <Button
-              title={'Test connection'}
-              onPress={() => {
-                console.log('todo test connection');
-              }}
-            />
-          </View>
-        </SafeAreaView>
-      </>
-    );
-  }
-}
+  const testConnection = () => {
+    ConnectionService.isRmtlyServerAvailable(url || '')
+      .then((available) => {
+        if (!available) {
+          throw new Error();
+        }
+
+        console.log('success');
+        ConfigService.setUrl(url || '').catch((error) => console.error(error));
+      })
+      .catch(() => {
+        console.log('error');
+      });
+  };
+
+  return (
+    <>
+      <StatusBar barStyle="dark-content" backgroundColor={'#7e23e8'} />
+      <SafeAreaView>
+        <View style={styles.body}>
+          <Text>Address</Text>
+          <TextInput
+            multiline={false}
+            value={url}
+            onChangeText={(text) => {
+              setUrl(text);
+              ConfigService.setUrl(text).then(() => {
+                console.log(text);
+              });
+            }}
+          />
+          <Button
+            title={'Scan QR'}
+            onPress={() => {
+              console.log('todo open qr scanner');
+            }}
+          />
+          <Button
+            title={'Test connection'}
+            onPress={() => {
+              testConnection();
+            }}
+          />
+        </View>
+      </SafeAreaView>
+    </>
+  );
+};
 
 const styles = StyleSheet.create({
   body: {

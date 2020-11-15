@@ -1,6 +1,11 @@
 export default {
-  get<T>(url: string): Promise<T> {
-    return fetch(url).then((response) => response.json());
+  get<T>(url: string, json: boolean = true): Promise<T> {
+    return fetch(url).then((response) => {
+      if (json) {
+        return response.json();
+      }
+      return null;
+    });
   },
 
   post<T>(url: string, body?: any): Promise<T> {
