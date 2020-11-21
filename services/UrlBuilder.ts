@@ -15,7 +15,7 @@ export class UrlBuilder {
   public create(customBaseUrl?: string): string {
     const configUrl = ConfigService.getUrl();
     if (configUrl) {
-      console.log(configUrl);
+      // console.log(configUrl);
       this.BASE_URL = configUrl;
     }
 

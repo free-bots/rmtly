@@ -5,5 +5,28 @@ export class ExecuteResponse {
     this.application = application;
   }
 
-  public application: ApplicationEntry
+  public application: ApplicationEntry;
+}
+
+export class SortedApplicationResponse {
+  constructor(sortedBy: SortKey, values: SortedValue[]) {
+    this.sortedBy = sortedBy;
+    this.values = values;
+  }
+  public sortedBy: SortKey;
+  public values: SortedValue[];
+}
+
+export class SortedValue {
+  public sortedValue: string;
+  public applicationEntries: ApplicationEntry[];
+
+  constructor(sortedValue: string, applicationEntries: ApplicationEntry[]) {
+    this.sortedValue = sortedValue;
+    this.applicationEntries = applicationEntries;
+  }
+}
+
+export enum SortKey {
+  CATEGORY = 'category',
 }

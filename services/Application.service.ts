@@ -1,7 +1,11 @@
 import {ApplicationEntry} from '../models/ApplicationEntry';
 import RestService from './Rest.service';
 import {UrlBuilder} from './UrlBuilder';
-import {ExecuteResponse} from '../models/Response.model';
+import {
+  ExecuteResponse,
+  SortedApplicationResponse,
+  SortKey,
+} from '../models/Response.model';
 import {ExecuteRequest} from '../models/Request.model';
 
 export default {
@@ -36,5 +40,12 @@ export default {
       .append(applicationId)
       .append('icon')
       .create();
+  },
+
+  sortApplicationBy(sortKey: SortKey): Promise<SortedApplicationResponse> {
+    const url = UrlBuilder.getInstance()
+      .append(`applications?sortedBy=${sortKey}`)
+      .create();
+    return RestService.get<SortedApplicationResponse>(url);
   },
 };
