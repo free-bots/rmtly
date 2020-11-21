@@ -19,12 +19,37 @@ export const Categories = ({navigation}: any) => {
     SortedApplicationResponse
   >();
 
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchApplicationsSortedByCategory();
+
+    const interval = setInterval(() => {
+      fetchApplicationsSortedByCategory();
+    }, 10000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  const onRefresh = () => {
+    fetchApplicationsSortedByCategory();
+  };
+
   const fetchApplicationsSortedByCategory = () => {
+    setLoading(true);
     ApplicationService.sortApplicationBy(SortKey.CATEGORY)
       .then((fetchedApplications) => {
+        fetchedApplications.values.sort((a, b) =>
+          a.sortedValue.localeCompare(b.sortedValue),
+        );
+        setLoading(false);
         setSortedApplications(fetchedApplications);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
   };
 
   const navigateToCategory = (sortedValue: SortedValue) => {
@@ -47,6 +72,10 @@ export const Categories = ({navigation}: any) => {
       <SafeAreaView>
         <View>
           <FlatList
+            refreshing={loading}
+            onRefresh={() => {
+              onRefresh();
+            }}
             data={sortedApplications?.values}
             renderItem={(info: ListRenderItemInfo<SortedValue>) => (
               <View>
@@ -58,7 +87,7 @@ export const Categories = ({navigation}: any) => {
                 />
               </View>
             )}
-            keyExtractor={(item, index) => String(index)}
+            keyExtractor={(item, index) => item.sortedValue || String(index)}
           />
         </View>
       </SafeAreaView>

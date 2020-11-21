@@ -58,6 +58,7 @@ export const Applications = ({route}: any) => {
     source: ApplicationListEntry[] | ApplicationEntry[],
     executing: boolean,
   ): ApplicationListEntry[] => {
+    source.sort((a, b) => a.name.localeCompare(b.name));
     return (source as any).map(
       (application: ApplicationEntry | ApplicationListEntry) => ({
         ...application,

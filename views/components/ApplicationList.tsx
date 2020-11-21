@@ -81,7 +81,7 @@ export const ApplicationList = ({
             />
           </Pressable>
         )}
-        keyExtractor={(item, index) => String(index)}
+        keyExtractor={(item, index) => item.id || String(index)}
       />
     </>
   );
