@@ -11,21 +11,8 @@
 import React from 'react';
 import {ThemeContextProvider} from './contexts/ThemeContext';
 import {ApplicationsContextProvider} from './contexts/ApplicationsContext';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import {NavigationContainer} from '@react-navigation/native';
-import Home from './views/pages/Home';
-import {Connection} from './views/pages/settings/Connection';
-import {Categories} from './views/pages/categories/Categories';
-import {DefaultTheme, DarkTheme} from '@react-navigation/native';
-import {useColorScheme} from 'react-native';
-import {CategoryNavigator} from './views/pages/categories/CategoryNavigator';
-import {
-  NavigationHeaderContext,
-  NavigationHeaderContextProvider,
-} from './contexts/NavigationHeaderContext';
+import {NavigationHeaderContextProvider} from './contexts/NavigationHeaderContext';
 import {RootNavigator} from './views/pages/RootNavigator';
-
-declare const global: {HermesInternal: null | {}};
 
 const App = () => {
   return (

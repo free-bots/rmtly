@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {FlatList, ListRenderItemInfo, Pressable} from 'react-native';
 import {ApplicationCard} from './ApplicationCard';
 import ApplicationService from '../../services/Application.service';
@@ -38,91 +38,24 @@ export class ApplicationListEntry extends ApplicationEntry {
 }
 
 export const ApplicationList = ({
+  onExecute,
   onDetails,
+  onRefresh,
+  loading,
+  applications,
 }: {
   onDetails: (application: ApplicationEntry) => void;
+  onExecute: (application: ApplicationEntry) => void;
+  onRefresh: () => void;
+  loading: boolean;
+  applications: ApplicationListEntry[];
 }) => {
-  const [refreshing, setRefreshing] = useState(false);
-  const [applications, setApplications] = useState<ApplicationListEntry[]>([]);
-
-  const fetchApplications = () => {
-    setRefreshing(true);
-    ApplicationService.getAllApplications()
-      .then((fetchedApplications) => {
-        setApplications(transformExecution(fetchedApplications, false));
-        setRefreshing(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setApplications([]);
-        setRefreshing(false);
-      });
-  };
-
-  const transformExecution = (
-    source: ApplicationListEntry[] | ApplicationEntry[],
-    executing: boolean,
-  ): ApplicationListEntry[] => {
-    return (source as any).map(
-      (application: ApplicationEntry | ApplicationListEntry) => ({
-        ...application,
-        executing: executing,
-      }),
-    );
-  };
-
-  const setExecuting = (applicationId: string, executing: boolean) => {
-    setApplications(
-      applications.map((iterateApplication) => {
-        iterateApplication.executing = !executing;
-
-        if (iterateApplication.id === applicationId) {
-          iterateApplication.executing = executing;
-        }
-        return iterateApplication;
-      }),
-    );
-  };
-
-  const execute = (application: ApplicationEntry) => {
-    setExecuting(application.id, true);
-    ApplicationService.executeApplication(application.id, {executeDelay: 0})
-      .then(() => {
-        setApplications(transformExecution(applications, false));
-      })
-      .catch((error) => {
-        setApplications(transformExecution(applications, false));
-        console.error(error);
-      });
-  };
-
-  const onRefresh = () => {
-    fetchApplications();
-  };
-
-  const onLongPress = (application: ApplicationEntry) => {
-    console.log('application list long press');
-    onDetails(application);
-  };
-
-  useEffect(() => {
-    fetchApplications();
-
-    const refreshInterval = setInterval(() => {
-      fetchApplications();
-    }, 10000);
-
-    return () => {
-      clearInterval(refreshInterval);
-    };
-  }, []);
-
   const numColumns = 3;
 
   return (
     <>
       <FlatList
-        refreshing={refreshing}
+        refreshing={loading}
         horizontal={false}
         numColumns={numColumns}
         onRefresh={onRefresh}
@@ -130,10 +63,10 @@ export const ApplicationList = ({
         renderItem={(itemInfo: ListRenderItemInfo<ApplicationListEntry>) => (
           <Pressable
             onPress={() => {
-              execute(itemInfo.item);
+              onExecute(itemInfo.item);
             }}
             onLongPress={() => {
-              onLongPress(itemInfo.item);
+              onDetails(itemInfo.item);
             }}
             style={{
               flex: 1 / numColumns,

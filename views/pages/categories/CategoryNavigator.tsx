@@ -1,8 +1,8 @@
 import React, {useContext} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import {Category} from './Category';
 import {Categories} from './Categories';
 import {NavigationHeaderContext} from '../../../contexts/NavigationHeaderContext';
+import {Applications} from '../Applications';
 
 const Stack = createStackNavigator();
 export const CategoryNavigator = () => {
@@ -14,8 +14,8 @@ export const CategoryNavigator = () => {
       <Stack.Screen name="Categories" component={Categories} />
       <Stack.Screen
         name="Category"
-        component={Category}
-        options={({route}) => ({title: (route.params as any)?.category})}
+        component={Applications}
+        options={({route}) => ({title: (route.params as any)?.category?.title})}
       />
     </Stack.Navigator>
   );

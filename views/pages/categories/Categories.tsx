@@ -14,18 +14,15 @@ import {
   SortKey,
 } from '../../../models/Response.model';
 
-export const Categories = ({navigation}) => {
-  // todo show all categories
-
+export const Categories = ({navigation}: any) => {
   const [sortedApplications, setSortedApplications] = useState<
     SortedApplicationResponse
   >();
 
   const fetchApplicationsSortedByCategory = () => {
     ApplicationService.sortApplicationBy(SortKey.CATEGORY)
-      .then((sortedApplications) => {
-        console.log(sortedApplications);
-        setSortedApplications(sortedApplications);
+      .then((fetchedApplications) => {
+        setSortedApplications(fetchedApplications);
       })
       .catch((error) => console.error(error));
   };
@@ -33,8 +30,10 @@ export const Categories = ({navigation}) => {
   const navigateToCategory = (sortedValue: SortedValue) => {
     console.log(sortedValue);
     navigation.navigate('Category', {
-      category: sortedValue.sortedValue,
-      applications: sortedValue.applicationEntries,
+      category: {
+        title: sortedValue.sortedValue,
+        applications: sortedValue.applicationEntries,
+      },
     });
   };
 
