@@ -30,3 +30,11 @@ export class SortedValue {
 export enum SortKey {
   CATEGORY = 'category',
 }
+
+export class SignUpResponse {
+  public token: string;
+
+  constructor(token: string) {
+    this.token = token;
+  }
+}

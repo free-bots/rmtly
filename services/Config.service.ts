@@ -17,6 +17,7 @@ export class ConfigStorage {
     try {
       const keys = await AsyncStorage.getAllKeys();
       const values = await AsyncStorage.multiGet(keys);
+      this.storageCopy.clear();
       values.forEach((pair) => {
         this.storageCopy.set(pair[0], pair[1]);
       });
@@ -49,7 +50,10 @@ export class ConfigStorage {
     return this.getValue(URL);
   }
 
-  public setToken(token: string): Promise<void> {
+  public setToken(token: string | null): Promise<void> {
+    if (!token) {
+      return AsyncStorage.removeItem(TOKEN).then(() => this.onUpdate());
+    }
     return AsyncStorage.setItem(TOKEN, token).then(() => this.onUpdate());
   }
 

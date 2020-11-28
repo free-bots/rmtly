@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {ConfigService} from '../../../services/Config.service';
 import ConnectionService from './../../../services/Connection.service';
+import AuthenticationService from './../../../services/Authentication.Service';
 
 export const Connection = () => {
   const [url, setUrl] = useState<string>();
@@ -42,6 +43,24 @@ export const Connection = () => {
       });
   };
 
+  const createNewCode = () => {
+    AuthenticationService.createCode().then(() => console.log('create code'));
+  };
+
+  const signUp = () => {
+    AuthenticationService.signUp({
+      deviceId: '',
+      qrCode: 'authenticationCode',
+    }).then((response) => {
+      console.log(response);
+      return AuthenticationService.login(response);
+    });
+  };
+
+  const logout = () => {
+    AuthenticationService.logOut();
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor={'#7e23e8'} />
@@ -68,6 +87,24 @@ export const Connection = () => {
             title={'Test connection'}
             onPress={() => {
               testConnection();
+            }}
+          />
+          <Button
+            title={'Create code'}
+            onPress={() => {
+              createNewCode();
+            }}
+          />
+          <Button
+            title={'SignUp'}
+            onPress={() => {
+              signUp();
+            }}
+          />
+          <Button
+            title={'Logout'}
+            onPress={() => {
+              logout();
             }}
           />
         </View>
