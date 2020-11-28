@@ -1,15 +1,11 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  NavigationContainer,
-} from '@react-navigation/native';
+import {DarkTheme, DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {CategoryNavigator} from './categories/CategoryNavigator';
-import {Connection} from './settings/Connection';
 import {NavigationHeaderContext} from '../../contexts/NavigationHeaderContext';
 import React, {useContext} from 'react';
 import {useColorScheme} from 'react-native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {Applications} from './Applications';
+import {ConnectionNavigator} from './connection/ConnectionNavigation';
 
 const Drawer = createDrawerNavigator();
 
@@ -53,7 +49,7 @@ export const RootNavigator = () => {
         detachInactiveScreens={true}>
         <Drawer.Screen name="Applications" component={Applications} />
         <Drawer.Screen name="Categories" component={CategoryNavigator} />
-        <Drawer.Screen name="Connection" component={Connection} />
+        <Drawer.Screen name="Connection" component={ConnectionNavigator} />
       </Drawer.Navigator>
     </NavigationContainer>
   );
