@@ -38,11 +38,16 @@ export const ServerConnection = ({navigation}: any) => {
     navigation.navigate('ServerAuthentication');
   };
 
+  const navigateToQr = () => {
+    navigation.navigate('ServerAuthenticationQr');
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor={'#7e23e8'} />
       <SafeAreaView>
         <View>
+          <Button title={'test'} onPress={() => navigateToQr()} />
           <TextInput
             placeholder={'URL'}
             onChangeText={(text) => {
