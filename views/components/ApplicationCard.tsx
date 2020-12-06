@@ -25,7 +25,10 @@ export const ApplicationCard = ({
         // justifyContent: 'center',
         // alignItems: 'center',
       }}>
-      <FallbackImage url={icon} style={{height: 50, width: 50, alignSelf: 'center'}} />
+      <FallbackImage
+        url={icon}
+        style={{height: 50, width: 50, alignSelf: 'center'}}
+      />
       <Text>{name}</Text>
       {loading && (
         <ActivityIndicator

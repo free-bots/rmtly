@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {Image, ImageStyle, StyleProp} from 'react-native';
+import {RestService} from '../../services/Rest.service';
 
 export const FallbackImage = ({
   url,
@@ -12,12 +13,19 @@ export const FallbackImage = ({
 
   return (
     <Image
-      source={imageSource}
+      source={{
+        headers: {
+          Authorization: RestService.headersConfig().get('Authorization') || '',
+        },
+        ...imageSource,
+      }}
       style={style}
       onError={() => {
         // todo default icon
         // setImageSource({uri: ''});
       }}
+      // loadingIndicatorSource={}
+      // defaultSource={}
     />
   );
 };
