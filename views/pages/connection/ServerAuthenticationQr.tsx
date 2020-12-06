@@ -8,10 +8,11 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import QRCodeScanner from 'react-native-qrcode-scanner';
+import {useSignUp} from './hooks/SignUpHook';
 
-export const ServerAuthenticationQr = () => {
+export const ServerAuthenticationQr = ({navigation}: any) => {
   const [camera, setCamera] = useState<'back' | 'front'>('back');
-  const [code, setCode] = useState<string>('');
+  const [code, setCode, signUp] = useSignUp();
 
   const onCode = (data: string) => {
     Alert.alert(
@@ -21,7 +22,17 @@ export const ServerAuthenticationQr = () => {
         {
           text: 'Yes',
           onPress: () => {
-            setCode(data);
+            signUp()
+              .then(() => {
+                navigation.reset({
+                  index: 0,
+                  routes: [{name: 'Applications'}],
+                });
+              })
+              .catch(() => {
+                // state is cleared
+                // try again
+              });
             // navigate
           },
         },

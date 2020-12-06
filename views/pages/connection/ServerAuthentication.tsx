@@ -1,24 +1,9 @@
-import React, {useState} from 'react';
-import AuthenticationService from './../../../services/Authentication.Service';
+import React from 'react';
 import {Button, SafeAreaView, StatusBar, TextInput, View} from 'react-native';
+import {useSignUp} from './hooks/SignUpHook';
 
-export const ServerAuthentication = () => {
-  const [code, setCode] = useState<string>();
-
-  const signUp = () => {
-    AuthenticationService.signUp({
-      deviceId: '',
-      qrCode: 'authenticationCode',
-    })
-      .then((response) => {
-        console.log(response);
-        return AuthenticationService.login(response);
-      })
-      .catch((reason) => {
-        console.error(reason);
-        setCode('');
-      });
-  };
+export const ServerAuthentication = ({navigation}: any) => {
+  const [code, setCode, signUp] = useSignUp();
 
   return (
     <>
@@ -41,7 +26,18 @@ export const ServerAuthentication = () => {
           <Button
             title={'SignUp'}
             onPress={() => {
-              signUp();
+              signUp()
+                .then(() => {
+                  console.log('success');
+                  navigation.reset({
+                    index: 0,
+                    routes: [{name: 'Applications'}],
+                  });
+                })
+                .catch(() => {
+                  // state is cleared
+                  // try again
+                });
             }}
           />
         </View>
