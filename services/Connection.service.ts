@@ -1,4 +1,4 @@
-import RestService from './Rest.service';
+import {RestService} from './Rest.service';
 import {UrlBuilder} from './UrlBuilder';
 
 export default {

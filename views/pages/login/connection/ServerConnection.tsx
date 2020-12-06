@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {Button, SafeAreaView, StatusBar, TextInput, View} from 'react-native';
-import {ConfigService} from '../../../services/Config.service';
-import ConnectionService from '../../../services/Connection.service';
-import AuthenticationService from './../../../services/Authentication.Service';
+import {ConfigService} from '../../../../services/Config.service';
+import ConnectionService from '../../../../services/Connection.service';
+import AuthenticationService from '../../../../services/Authentication.Service';
 
 export const ServerConnection = ({navigation}: any) => {
   const [url, setUrl] = useState<string>();

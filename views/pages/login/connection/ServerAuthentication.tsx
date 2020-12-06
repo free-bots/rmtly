@@ -1,9 +1,12 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Button, SafeAreaView, StatusBar, TextInput, View} from 'react-native';
 import {useSignUp} from './hooks/SignUpHook';
+import {LoginContext} from '../../../../contexts/LoginContext';
 
-export const ServerAuthentication = ({navigation}: any) => {
+export const ServerAuthentication = () => {
   const [code, setCode, signUp] = useSignUp();
+
+  const {loggedIn} = useContext(LoginContext);
 
   return (
     <>
@@ -29,10 +32,7 @@ export const ServerAuthentication = ({navigation}: any) => {
               signUp()
                 .then(() => {
                   console.log('success');
-                  navigation.reset({
-                    index: 0,
-                    routes: [{name: 'Applications'}],
-                  });
+                  loggedIn();
                 })
                 .catch(() => {
                   // state is cleared

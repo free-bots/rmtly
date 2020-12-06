@@ -1,4 +1,4 @@
-import AuthenticationService from '../../../../services/Authentication.Service';
+import AuthenticationService from '../../../../../services/Authentication.Service';
 import {Dispatch, SetStateAction, useState} from 'react';
 
 export const useSignUp = (): [

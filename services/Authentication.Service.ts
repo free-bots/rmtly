@@ -1,4 +1,4 @@
-import RestService from './Rest.service';
+import {RestService} from './Rest.service';
 import {UrlBuilder} from './UrlBuilder';
 import {SignUpResponse} from '../models/Response.model';
 import {SignUpRequest} from '../models/Request.model';
@@ -28,5 +28,9 @@ export default {
 
   logOut(): Promise<void> {
     return ConfigService.setToken(null);
+  },
+
+  async isAuthenticated(): Promise<boolean> {
+    return ConfigService.getToken() !== null && ConfigService.getUrl() !== null;
   },
 };

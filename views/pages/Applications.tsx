@@ -1,5 +1,5 @@
 import React, {createRef, useEffect, useState} from 'react';
-import {SafeAreaView, StatusBar, View} from 'react-native';
+import {View} from 'react-native';
 import {
   ApplicationList,
   ApplicationListEntry,
@@ -7,6 +7,7 @@ import {
 import {ApplicationEntry} from '../../models/ApplicationEntry';
 import {ApplicationBottomSheet} from '../components/ApplicationBottomSheet';
 import ApplicationService from '../../services/Application.service';
+import {BaseScreen} from './base/BaseScreen';
 
 export const Applications = ({route}: any) => {
   const category = route.params?.category as {
@@ -102,8 +103,7 @@ export const Applications = ({route}: any) => {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor={'#7e23e8'} />
-      <SafeAreaView>
+      <BaseScreen>
         <View
           style={{
             elevation: 18,
@@ -125,7 +125,7 @@ export const Applications = ({route}: any) => {
           </View>
         </View>
         <ApplicationBottomSheet ref={applicationButtonSheetRef} />
-      </SafeAreaView>
+      </BaseScreen>
     </>
   );
 };

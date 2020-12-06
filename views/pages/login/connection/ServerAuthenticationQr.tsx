@@ -6,13 +6,16 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {useSignUp} from './hooks/SignUpHook';
+import {LoginContext} from '../../../../contexts/LoginContext';
 
-export const ServerAuthenticationQr = ({navigation}: any) => {
+export const ServerAuthenticationQr = () => {
   const [camera, setCamera] = useState<'back' | 'front'>('back');
   const [code, setCode, signUp] = useSignUp();
+
+  const {loggedIn} = useContext(LoginContext);
 
   const onCode = (data: string) => {
     Alert.alert(
@@ -24,10 +27,7 @@ export const ServerAuthenticationQr = ({navigation}: any) => {
           onPress: () => {
             signUp()
               .then(() => {
-                navigation.reset({
-                  index: 0,
-                  routes: [{name: 'Applications'}],
-                });
+                loggedIn();
               })
               .catch(() => {
                 // state is cleared

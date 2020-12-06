@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const URL = 'URL';
 const TOKEN = 'TOKEN';
 
@@ -8,6 +9,8 @@ export class ConfigStorage {
     string,
     string | null
   >();
+
+  private onUpdated: {key: string; callback: () => void}[] = [];
 
   constructor() {
     this.onUpdate().catch((error) => console.error(error));
@@ -24,6 +27,13 @@ export class ConfigStorage {
     } catch (error) {
       console.error(error);
     }
+    this.onUpdated.forEach((listener) => {
+      try {
+        listener.callback();
+      } catch (error) {
+        console.error(error);
+      }
+    });
   }
 
   private getValue(key: string): string | null {
@@ -59,6 +69,18 @@ export class ConfigStorage {
 
   public getToken(): string | null {
     return this.getValue(TOKEN);
+  }
+
+  public forceUpdate() {
+    this.onUpdate();
+  }
+
+  public subscribeOnUpdate(listener: {key: string; callback: () => void}) {
+    this.onUpdated.push(listener);
+  }
+
+  public unSubscribeOnUpdate(key: string) {
+    this.onUpdated = this.onUpdated.filter((listener) => listener.key !== key);
   }
 }
 

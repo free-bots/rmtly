@@ -1,5 +1,5 @@
 import {ApplicationEntry} from '../models/ApplicationEntry';
-import RestService from './Rest.service';
+import {RestService} from './Rest.service';
 import {UrlBuilder} from './UrlBuilder';
 import {
   ExecuteResponse,
