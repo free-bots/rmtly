@@ -15,22 +15,34 @@ import {NavigationHeaderContextProvider} from './contexts/NavigationHeaderContex
 import {RootNavigator} from './views/pages/RootNavigator';
 import {LoginContextProvider} from './contexts/LoginContext';
 import {ConfigService} from './services/Config.service';
+import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
 
 const App = () => {
   useEffect(() => {
     ConfigService.forceUpdate();
   }, []);
 
+  const theme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      primary: 'tomato',
+      accent: 'yellow',
+    },
+  };
+
   return (
-    <ThemeContextProvider>
-      <LoginContextProvider>
-        <ApplicationsContextProvider>
-          <NavigationHeaderContextProvider>
-            <RootNavigator />
-          </NavigationHeaderContextProvider>
-        </ApplicationsContextProvider>
-      </LoginContextProvider>
-    </ThemeContextProvider>
+    <PaperProvider theme={theme}>
+      <ThemeContextProvider>
+        <LoginContextProvider>
+          <ApplicationsContextProvider>
+            <NavigationHeaderContextProvider>
+              <RootNavigator />
+            </NavigationHeaderContextProvider>
+          </ApplicationsContextProvider>
+        </LoginContextProvider>
+      </ThemeContextProvider>
+    </PaperProvider>
   );
 };
 
