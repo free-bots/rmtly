@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import {Button, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 import {ApplicationEntry} from '../../models/ApplicationEntry';
 import {FallbackImage} from './FallbackImage';
 import ApplicationService from '../../services/Application.service';
 import ActionSheet from 'react-native-actions-sheet';
 import {Picker} from '@react-native-picker/picker';
 import {ItemValue} from '@react-native-picker/picker/typings/Picker';
+import Button from './buttons/Button';
 
 const delays: {display: string; value: number}[] = [
   {
@@ -112,11 +113,11 @@ export class ApplicationBottomSheet extends Component<
                 ))}
               </Picker>
               <Button
-                title={'run'}
                 onPress={() => {
                   this.execute();
-                }}
-              />
+                }}>
+                Run
+              </Button>
             </>
           )}
         </View>

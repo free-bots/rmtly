@@ -5,7 +5,12 @@ export const BaseScreen = (props: React.ComponentProps<any>) => {
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor={'#7e23e8'} />
-      <SafeAreaView>{props.children}</SafeAreaView>
+      <SafeAreaView
+        style={{
+          flex: 1,
+        }}>
+        {props.children}
+      </SafeAreaView>
     </>
   );
 };

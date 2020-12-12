@@ -1,5 +1,4 @@
 import React, {createRef, useEffect, useState} from 'react';
-import {View} from 'react-native';
 import {
   ApplicationList,
   ApplicationListEntry,
@@ -8,6 +7,7 @@ import {ApplicationEntry} from '../../models/ApplicationEntry';
 import {ApplicationBottomSheet} from '../components/ApplicationBottomSheet';
 import ApplicationService from '../../services/Application.service';
 import {BaseScreen} from './base/BaseScreen';
+import {Searchbar, Surface} from 'react-native-paper';
 
 export const Applications = ({route}: any) => {
   const category = route.params?.category as {
@@ -16,6 +16,7 @@ export const Applications = ({route}: any) => {
   };
   const [loading, setLoading] = useState(false);
   const [applications, setApplications] = useState<ApplicationListEntry[]>([]);
+  const [search, setSearch] = useState<string>('');
 
   useEffect(() => {
     if (category) {
@@ -34,6 +35,27 @@ export const Applications = ({route}: any) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const equalsOrInclude = (a: string, b: string): boolean => {
+    if (!a || !b) {
+      return true;
+    }
+    a = a.toLocaleLowerCase();
+    b = b.toLocaleLowerCase();
+    return a.includes(b);
+  };
+
+  const filterBySearch = (
+    unfilteredApplications: ApplicationListEntry[],
+    filter: string,
+  ) => {
+    return unfilteredApplications.filter((currentApplication) =>
+      [
+        equalsOrInclude(currentApplication.id, filter),
+        equalsOrInclude(currentApplication.name, filter),
+      ].reduce((previousValue, currentValue) => previousValue || currentValue),
+    );
+  };
 
   const applicationButtonSheetRef: any = createRef<ApplicationBottomSheet>();
 
@@ -104,26 +126,37 @@ export const Applications = ({route}: any) => {
   return (
     <>
       <BaseScreen>
-        <View
+        <ApplicationList
+          loading={loading}
+          onRefresh={() => {
+            onRefresh();
+          }}
+          onExecute={(application: ApplicationEntry) => {
+            execute(application);
+          }}
+          onDetails={(application: ApplicationEntry) => {
+            openApplicationDetails(application);
+          }}
+          applications={filterBySearch(applications, search)}
+        />
+        <Surface
           style={{
-            elevation: 18,
+            backgroundColor: 'gray',
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            padding: 7,
+            alignItems: 'center',
+            justifyContent: 'center',
+            elevation: 4,
           }}>
-          <View>
-            <ApplicationList
-              loading={loading}
-              onRefresh={() => {
-                onRefresh();
-              }}
-              onExecute={(application: ApplicationEntry) => {
-                execute(application);
-              }}
-              onDetails={(application: ApplicationEntry) => {
-                openApplicationDetails(application);
-              }}
-              applications={applications}
-            />
-          </View>
-        </View>
+          <Searchbar
+            placeholder="Search"
+            onChangeText={(text: string) => {
+              setSearch(text);
+            }}
+            value={search}
+          />
+        </Surface>
         <ApplicationBottomSheet ref={applicationButtonSheetRef} />
       </BaseScreen>
     </>

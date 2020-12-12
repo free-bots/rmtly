@@ -1,11 +1,4 @@
-import {
-  Button,
-  FlatList,
-  ListRenderItemInfo,
-  SafeAreaView,
-  StatusBar,
-  View,
-} from 'react-native';
+import {FlatList, ListRenderItemInfo, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import ApplicationService from '../../../services/Application.service';
 import {
@@ -13,6 +6,8 @@ import {
   SortedValue,
   SortKey,
 } from '../../../models/Response.model';
+import {List} from 'react-native-paper';
+import {BaseScreen} from '../base/BaseScreen';
 
 export const Categories = ({navigation}: any) => {
   const [sortedApplications, setSortedApplications] = useState<
@@ -68,8 +63,7 @@ export const Categories = ({navigation}: any) => {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor={'#7e23e8'} />
-      <SafeAreaView>
+      <BaseScreen>
         <View>
           <FlatList
             refreshing={loading}
@@ -79,8 +73,18 @@ export const Categories = ({navigation}: any) => {
             data={sortedApplications?.values}
             renderItem={(info: ListRenderItemInfo<SortedValue>) => (
               <View>
-                <Button
+                <List.Item
                   title={info.item.sortedValue}
+                  left={(props) => (
+                    <List.Icon
+                      {...props}
+                      icon="folder"
+                      style={{
+                        borderRadius: 100,
+                        backgroundColor: 'gray',
+                      }}
+                    />
+                  )}
                   onPress={() => {
                     navigateToCategory(info.item);
                   }}
@@ -90,7 +94,7 @@ export const Categories = ({navigation}: any) => {
             keyExtractor={(item, index) => item.sortedValue || String(index)}
           />
         </View>
-      </SafeAreaView>
+      </BaseScreen>
     </>
   );
 };

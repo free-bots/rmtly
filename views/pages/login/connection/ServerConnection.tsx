@@ -1,8 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Button, SafeAreaView, StatusBar, TextInput, View} from 'react-native';
+import {View} from 'react-native';
 import {ConfigService} from '../../../../services/Config.service';
 import ConnectionService from '../../../../services/Connection.service';
 import AuthenticationService from '../../../../services/Authentication.Service';
+import Button from '../../../components/buttons/Button';
+import TextInput from '../../../components/TextInputs/TextInput';
+import {BaseScreen} from '../../base/BaseScreen';
 
 export const ServerConnection = ({navigation}: any) => {
   const [url, setUrl] = useState<string>();
@@ -44,31 +47,32 @@ export const ServerConnection = ({navigation}: any) => {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor={'#7e23e8'} />
-      <SafeAreaView>
+      <BaseScreen>
         <View>
-          <Button title={'test'} onPress={() => navigateToQr()} />
+          <Button onPress={() => navigateToQr()}>Test</Button>
           <TextInput
+            label={'URL'}
+            mode={'outlined'}
             placeholder={'URL'}
-            onChangeText={(text) => {
+            onChangeText={(text: string) => {
               setUrl(text);
             }}
             value={url}
           />
           <Button
-            title={'Login'}
             onPress={() => {
               testConnectionAndNavigate();
-            }}
-          />
+            }}>
+            Login
+          </Button>
           <Button
-            title={'logOut'}
             onPress={() => {
               AuthenticationService.logOut();
-            }}
-          />
+            }}>
+            logOut
+          </Button>
         </View>
-      </SafeAreaView>
+      </BaseScreen>
     </>
   );
 };

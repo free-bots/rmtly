@@ -1,7 +1,9 @@
 import React, {useContext} from 'react';
-import {Button, SafeAreaView, StatusBar, TextInput, View} from 'react-native';
+import {TextInput, View} from 'react-native';
 import {useSignUp} from './hooks/SignUpHook';
 import {LoginContext} from '../../../../contexts/LoginContext';
+import Button from '../../../components/buttons/Button';
+import {BaseScreen} from '../../base/BaseScreen';
 
 export const ServerAuthentication = () => {
   const [code, setCode, signUp] = useSignUp();
@@ -10,15 +12,14 @@ export const ServerAuthentication = () => {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor={'#7e23e8'} />
-      <SafeAreaView>
+      <BaseScreen>
         <View>
           <Button
-            title={'Scan QR'}
             onPress={() => {
               console.log('todo open qr scanner');
-            }}
-          />
+            }}>
+            Scan QR
+          </Button>
           <TextInput
             placeholder={'code'}
             value={code}
@@ -27,7 +28,6 @@ export const ServerAuthentication = () => {
             }}
           />
           <Button
-            title={'SignUp'}
             onPress={() => {
               signUp()
                 .then(() => {
@@ -38,10 +38,11 @@ export const ServerAuthentication = () => {
                   // state is cleared
                   // try again
                 });
-            }}
-          />
+            }}>
+            SignUp
+          </Button>
         </View>
-      </SafeAreaView>
+      </BaseScreen>
     </>
   );
 };

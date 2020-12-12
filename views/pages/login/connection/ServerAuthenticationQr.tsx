@@ -1,15 +1,10 @@
-import {
-  Alert,
-  Button,
-  SafeAreaView,
-  StatusBar,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import {Alert, Text, TouchableOpacity} from 'react-native';
 import React, {useContext, useState} from 'react';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {useSignUp} from './hooks/SignUpHook';
 import {LoginContext} from '../../../../contexts/LoginContext';
+import Button from '../../../components/buttons/Button';
+import {BaseScreen} from '../../base/BaseScreen';
 
 export const ServerAuthenticationQr = () => {
   const [camera, setCamera] = useState<'back' | 'front'>('back');
@@ -53,14 +48,13 @@ export const ServerAuthenticationQr = () => {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor={'#7e23e8'} />
-      <SafeAreaView>
+      <BaseScreen>
         <Button
-          title={code}
           onPress={() => {
             onCode('test');
-          }}
-        />
+          }}>
+          {code}
+        </Button>
         <QRCodeScanner
           cameraProps={{
             autoFocus: 'on',
@@ -80,9 +74,9 @@ export const ServerAuthenticationQr = () => {
             </TouchableOpacity>
           }
         />
-        <Button title={'back'} onPress={() => setCamera('back')} />
-        <Button title={'front'} onPress={() => setCamera('front')} />
-      </SafeAreaView>
+        <Button onPress={() => setCamera('back')}>Back</Button>
+        <Button onPress={() => setCamera('front')}>Front</Button>
+      </BaseScreen>
     </>
   );
 };
