@@ -1,16 +1,18 @@
-import React, {createContext, useReducer} from 'react';
-import {ThemeReducer} from '../reducers/ThemeReducer';
+import React, {createContext, useEffect, useState} from 'react';
 
-export const ThemeContext = createContext({});
+import {
+  DarkTheme as NavigationDarkTheme,
+  DefaultTheme as NavigationDefaultTheme,
+} from '@react-navigation/native';
+import {
+  DarkTheme as PaperDarkTheme,
+  DefaultTheme as PaperDefaultTheme,
+} from 'react-native-paper';
+import {useColorScheme} from 'react-native';
 
-export class ThemeState {
-  constructor(light: {}, dark: {}, isLightTheme: true) {
-    this.light = light;
-    this.dark = dark;
-    this.isLightTheme = isLightTheme;
-  }
-  light: {}; // todo Theme class
-  dark: {};
+export interface ThemeState {
+  light: any;
+  dark: any;
   isLightTheme: boolean;
 }
 
@@ -22,16 +24,45 @@ export class Theme {
   accentColor: string;
 }
 
+const CombinedDefaultTheme = {
+  ...PaperDefaultTheme,
+  ...NavigationDefaultTheme,
+  colors: {
+    ...PaperDefaultTheme.colors,
+    ...NavigationDefaultTheme.colors,
+  },
+};
+const CombinedDarkTheme = {
+  ...PaperDarkTheme,
+  ...NavigationDarkTheme,
+  colors: {
+    ...PaperDarkTheme.colors,
+    ...NavigationDarkTheme.colors,
+    primary: '#6230ff',
+    accent: '#6d15c2',
+  },
+};
+
 const initialState = {
-  light: {},
-  dark: {},
+  light: CombinedDefaultTheme,
+  dark: CombinedDarkTheme,
   isLightTheme: true,
 };
 
+export const ThemeContext = createContext({
+  ...initialState,
+});
+
 export const ThemeContextProvider = (props: any) => {
-  const [theme, dispatch] = useReducer(ThemeReducer, initialState);
+  const scheme = useColorScheme();
+  const [theme, setTheme] = useState<ThemeState>(initialState);
+
+  useEffect(() => {
+    setTheme({...theme, isLightTheme: scheme !== 'dark'});
+  }, [scheme]);
+
   return (
-    <ThemeContext.Provider value={{theme, themeDispatcher: dispatch}}>
+    <ThemeContext.Provider value={theme}>
       {props.children}
     </ThemeContext.Provider>
   );

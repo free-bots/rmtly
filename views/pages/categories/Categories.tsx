@@ -1,5 +1,5 @@
 import {FlatList, ListRenderItemInfo, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import ApplicationService from '../../../services/Application.service';
 import {
   SortedApplicationResponse,
@@ -8,6 +8,7 @@ import {
 } from '../../../models/Response.model';
 import {List} from 'react-native-paper';
 import {BaseScreen} from '../base/BaseScreen';
+import {ThemeContext} from '../../../contexts/ThemeContext';
 
 export const Categories = ({navigation}: any) => {
   const [sortedApplications, setSortedApplications] = useState<
@@ -15,6 +16,8 @@ export const Categories = ({navigation}: any) => {
   >();
 
   const [loading, setLoading] = useState(false);
+  const {dark, light, isLightTheme} = useContext(ThemeContext);
+  const theme = isLightTheme ? light : dark;
 
   useEffect(() => {
     fetchApplicationsSortedByCategory();
@@ -78,10 +81,10 @@ export const Categories = ({navigation}: any) => {
                   left={(props) => (
                     <List.Icon
                       {...props}
-                      icon="folder"
+                      icon="file-tree-outline"
                       style={{
                         borderRadius: 100,
-                        backgroundColor: 'gray',
+                        backgroundColor: theme.colors.primary,
                       }}
                     />
                   )}

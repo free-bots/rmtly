@@ -8,32 +8,37 @@
  * @format
  */
 
-import React, {useEffect} from 'react';
-import {ThemeContextProvider} from './contexts/ThemeContext';
+import React, {useContext, useEffect} from 'react';
+import {ThemeContext, ThemeContextProvider} from './contexts/ThemeContext';
 import {ApplicationsContextProvider} from './contexts/ApplicationsContext';
 import {NavigationHeaderContextProvider} from './contexts/NavigationHeaderContext';
 import {RootNavigator} from './views/pages/RootNavigator';
 import {LoginContextProvider} from './contexts/LoginContext';
 import {ConfigService} from './services/Config.service';
-import {DefaultTheme, Provider as PaperProvider} from 'react-native-paper';
+import {Provider as PaperProvider} from 'react-native-paper';
+
+export const UiProvider = (props: any) => {
+  const {dark, light, isLightTheme} = useContext(ThemeContext);
+
+  useEffect(() => {
+    console.log(`Using light theme: ${isLightTheme}`);
+  }, [isLightTheme]);
+
+  return (
+    <PaperProvider theme={isLightTheme ? light : dark}>
+      {props.children}
+    </PaperProvider>
+  );
+};
 
 const App = () => {
   useEffect(() => {
     ConfigService.forceUpdate();
   }, []);
 
-  const theme = {
-    ...DefaultTheme,
-    colors: {
-      ...DefaultTheme.colors,
-      primary: 'tomato',
-      accent: 'yellow',
-    },
-  };
-
   return (
-    <PaperProvider theme={theme}>
-      <ThemeContextProvider>
+    <ThemeContextProvider>
+      <UiProvider>
         <LoginContextProvider>
           <ApplicationsContextProvider>
             <NavigationHeaderContextProvider>
@@ -41,8 +46,8 @@ const App = () => {
             </NavigationHeaderContextProvider>
           </ApplicationsContextProvider>
         </LoginContextProvider>
-      </ThemeContextProvider>
-    </PaperProvider>
+      </UiProvider>
+    </ThemeContextProvider>
   );
 };
 

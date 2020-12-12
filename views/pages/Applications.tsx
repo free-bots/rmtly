@@ -1,13 +1,14 @@
-import React, {createRef, useEffect, useState} from 'react';
+import React, {createRef, useContext, useEffect, useState} from 'react';
 import {
   ApplicationList,
   ApplicationListEntry,
 } from '../components/ApplicationList';
 import {ApplicationEntry} from '../../models/ApplicationEntry';
-import {ApplicationBottomSheet} from '../components/ApplicationBottomSheet';
+import ApplicationBottomSheet from '../components/ApplicationBottomSheet';
 import ApplicationService from '../../services/Application.service';
 import {BaseScreen} from './base/BaseScreen';
 import {Searchbar, Surface} from 'react-native-paper';
+import {ThemeContext} from '../../contexts/ThemeContext';
 
 export const Applications = ({route}: any) => {
   const category = route.params?.category as {
@@ -17,6 +18,8 @@ export const Applications = ({route}: any) => {
   const [loading, setLoading] = useState(false);
   const [applications, setApplications] = useState<ApplicationListEntry[]>([]);
   const [search, setSearch] = useState<string>('');
+  const {dark, light, isLightTheme} = useContext(ThemeContext);
+  const theme = isLightTheme ? light : dark;
 
   useEffect(() => {
     if (category) {
@@ -57,7 +60,9 @@ export const Applications = ({route}: any) => {
     );
   };
 
-  const applicationButtonSheetRef: any = createRef<ApplicationBottomSheet>();
+  const applicationButtonSheetRef: any = createRef<
+    typeof ApplicationBottomSheet
+  >();
 
   const openApplicationDetails = (application: ApplicationEntry) => {
     applicationButtonSheetRef.current?.open(application);
@@ -141,13 +146,13 @@ export const Applications = ({route}: any) => {
         />
         <Surface
           style={{
-            backgroundColor: 'gray',
+            backgroundColor: theme.colors.background,
             borderTopLeftRadius: 10,
             borderTopRightRadius: 10,
             padding: 7,
             alignItems: 'center',
             justifyContent: 'center',
-            elevation: 4,
+            elevation: 3,
           }}>
           <Searchbar
             placeholder="Search"

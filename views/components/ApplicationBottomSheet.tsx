@@ -1,49 +1,29 @@
-import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import React, {Component, useContext} from 'react';
+import {View} from 'react-native';
 import {ApplicationEntry} from '../../models/ApplicationEntry';
 import {FallbackImage} from './FallbackImage';
 import ApplicationService from '../../services/Application.service';
 import ActionSheet from 'react-native-actions-sheet';
-import {Picker} from '@react-native-picker/picker';
-import {ItemValue} from '@react-native-picker/picker/typings/Picker';
 import Button from './buttons/Button';
+import {ThemeContext, ThemeState} from '../../contexts/ThemeContext';
+import DropDownPicker from 'react-native-dropdown-picker';
+import {Text} from 'react-native-paper';
 
-const delays: {display: string; value: number}[] = [
-  {
-    display: '0 Sec',
-    value: 0,
-  },
-  {
-    display: '3 Sec',
-    value: 3000,
-  },
-  {
-    display: '5 Sec',
-    value: 5000,
-  },
-  {
-    display: '10 Sec',
-    value: 10000,
-  },
-  {
-    display: '30 Sec',
-    value: 30000,
-  },
-];
+const delays: {label: string; value: number}[] = [0, 3, 5, 10, 30, 60].map(
+  (time) => ({
+    label: `${time} Sec`,
+    value: time,
+  }),
+);
 
-export class ApplicationBottomSheetProps {}
+export interface ApplicationBottomSheetProps extends ThemeState {}
 
-export class ApplicationBottomSheetState {
-  constructor(application: ApplicationEntry | null, executeDelay: number) {
-    this.application = application;
-    this.executeDelay = executeDelay;
-  }
-
+export interface ApplicationBottomSheetState {
   application: ApplicationEntry | null;
   executeDelay: number;
 }
 
-export class ApplicationBottomSheet extends Component<
+class ApplicationBottomSheet extends Component<
   ApplicationBottomSheetProps,
   ApplicationBottomSheetState
 > {
@@ -80,9 +60,13 @@ export class ApplicationBottomSheet extends Component<
   };
 
   render() {
+    const theme = this.props.isLightTheme ? this.props.light : this.props.dark;
     const {application} = this.state;
     return (
       <ActionSheet
+        containerStyle={{
+          backgroundColor: theme.colors.background,
+        }}
         ref={this.actionSheetRef}
         gestureEnabled={true}
         initialOffsetFromBottom={500}>
@@ -96,22 +80,46 @@ export class ApplicationBottomSheet extends Component<
                 url={ApplicationService.getIcon(application.id)}
                 style={{height: 100, width: 100, alignSelf: 'center'}}
               />
-              <Text>{application.name}</Text>
-              <Picker
-                mode={'dropdown'}
-                selectedValue={this.state.executeDelay}
-                style={{height: 50}}
-                onValueChange={(itemValue: ItemValue) =>
-                  this.setState({executeDelay: Number(itemValue)})
-                }>
-                {delays.map((delay, index) => (
-                  <Picker.Item
-                    label={delay.display}
-                    value={delay.value}
-                    key={index}
-                  />
-                ))}
-              </Picker>
+              <Text
+                style={{
+                  alignSelf: 'center',
+                }}>
+                {application.name}
+              </Text>
+              <DropDownPicker
+                arrowColor={theme.colors.primary}
+                showArrow={true}
+                dropDownMaxHeight={250}
+                items={delays}
+                autoScrollToDefaultValue={true}
+                defaultValue={this.state.executeDelay}
+                style={{
+                  backgroundColor: theme.colors.background,
+                  borderColor: theme.colors.background,
+                }}
+                dropDownStyle={{
+                  borderTopLeftRadius: theme.roundness,
+                  borderTopRightRadius: theme.roundness,
+                  borderBottomLeftRadius: theme.roundness,
+                  borderBottomRightRadius: theme.roundness,
+                  backgroundColor: theme.colors.background,
+                  borderColor: theme.colors.primary,
+                }}
+                containerStyle={{height: 50, margin: 5}}
+                itemStyle={{
+                  backgroundColor: theme.colors.background,
+                  justifyContent: 'flex-start',
+                }}
+                labelStyle={{
+                  color: theme.colors.primary,
+                }}
+                selectedLabelStyle={{
+                  color: theme.colors.primary,
+                }}
+                onChangeItem={(item) =>
+                  this.setState({executeDelay: Number(item.value)})
+                }
+              />
               <Button
                 onPress={() => {
                   this.execute();
@@ -125,3 +133,23 @@ export class ApplicationBottomSheet extends Component<
     );
   }
 }
+
+const applyTheme = (ComponentToWrap: any) => {
+  const Wrapped = (props: any) => {
+    const {dark, light, isLightTheme} = useContext(ThemeContext);
+    const {forwardedRef} = props;
+    return (
+      <ComponentToWrap
+        {...props}
+        {...{dark, light, isLightTheme}}
+        ref={forwardedRef}
+      />
+    );
+  };
+
+  return React.forwardRef((props, ref) => {
+    return <Wrapped {...props} forwardedRef={ref} />;
+  });
+};
+
+export default applyTheme(ApplicationBottomSheet);

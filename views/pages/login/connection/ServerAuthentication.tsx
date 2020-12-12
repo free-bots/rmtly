@@ -6,7 +6,7 @@ import Button from '../../../components/buttons/Button';
 import {BaseScreen} from '../../base/BaseScreen';
 
 export const ServerAuthentication = () => {
-  const [code, setCode, signUp] = useSignUp();
+  const [loading, code, setCode, signUp] = useSignUp();
 
   const {loggedIn} = useContext(LoginContext);
 
@@ -28,6 +28,7 @@ export const ServerAuthentication = () => {
             }}
           />
           <Button
+            loading={loading}
             onPress={() => {
               signUp()
                 .then(() => {

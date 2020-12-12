@@ -8,7 +8,7 @@ import {BaseScreen} from '../../base/BaseScreen';
 
 export const ServerAuthenticationQr = () => {
   const [camera, setCamera] = useState<'back' | 'front'>('back');
-  const [code, setCode, signUp] = useSignUp();
+  const [loading, code, setCode, signUp] = useSignUp();
 
   const {loggedIn} = useContext(LoginContext);
 
@@ -50,6 +50,7 @@ export const ServerAuthenticationQr = () => {
     <>
       <BaseScreen>
         <Button
+          loading={loading}
           onPress={() => {
             onCode('test');
           }}>

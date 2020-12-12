@@ -1,22 +1,20 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  NavigationContainer,
-} from '@react-navigation/native';
+import {NavigationContainer} from '@react-navigation/native';
 import {CategoryNavigator} from './categories/CategoryNavigator';
 import {NavigationHeaderContext} from '../../contexts/NavigationHeaderContext';
 import React, {useContext} from 'react';
-import {ActivityIndicator, Text, useColorScheme, View} from 'react-native';
+import {ActivityIndicator, View} from 'react-native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {Applications} from './Applications';
 import {LoginNavigator} from './login/LoginNavigation';
 import {LoginContext} from '../../contexts/LoginContext';
 import {BaseScreen} from './base/BaseScreen';
+import {ThemeContext} from '../../contexts/ThemeContext';
+import {Text} from 'react-native-paper';
 
 const Drawer = createDrawerNavigator();
 
 export const RootNavigator = () => {
-  const scheme = useColorScheme();
+  const {dark, light, isLightTheme} = useContext(ThemeContext);
 
   const {headerVisible, enableHeader, disableHeader} = useContext(
     NavigationHeaderContext,
@@ -43,37 +41,42 @@ export const RootNavigator = () => {
     }
   };
 
+  const theme = isLightTheme ? light : dark;
+
   return (
     <NavigationContainer
-      theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
+      theme={theme}
       onStateChange={(state) => {
         handleNavigationChange(state);
       }}>
       {loading && (
-        <BaseScreen>
-          <View
-            style={{
-              height: '100%',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <ActivityIndicator
-              size={'large'}
-              color={'#7e23e8'}
+        <>
+          <BaseScreen>
+            <View
               style={{
-                position: 'relative',
-                // height: '100%',
-              }}
-            />
-            <Text>Please Wait...</Text>
-          </View>
-        </BaseScreen>
+                backgroundColor: theme.colors.background,
+                height: '100%',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <ActivityIndicator
+                size={'large'}
+                color={theme.colors.primary}
+                style={{
+                  position: 'relative',
+                }}
+              />
+              <Text>Please Wait...</Text>
+            </View>
+          </BaseScreen>
+        </>
       )}
       {!loading && !isAuthenticated && <LoginNavigator />}
       {!loading && isAuthenticated && (
         <Drawer.Navigator
           initialRouteName="Home"
           screenOptions={{
+            headerTintColor: theme.colors.text,
             headerShown: headerVisible,
           }}
           detachInactiveScreens={true}>

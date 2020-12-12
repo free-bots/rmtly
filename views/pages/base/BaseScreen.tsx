@@ -1,10 +1,16 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {SafeAreaView, StatusBar} from 'react-native';
+import {ThemeContext} from '../../../contexts/ThemeContext';
 
 export const BaseScreen = (props: React.ComponentProps<any>) => {
+  const {dark, light, isLightTheme} = useContext(ThemeContext);
+  const theme = isLightTheme ? light : dark;
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor={'#7e23e8'} />
+      <StatusBar
+        barStyle={isLightTheme ? 'dark-content' : 'light-content'}
+        backgroundColor={theme.colors.surface}
+      />
       <SafeAreaView
         style={{
           flex: 1,

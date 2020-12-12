@@ -9,6 +9,7 @@ import {BaseScreen} from '../../base/BaseScreen';
 
 export const ServerConnection = ({navigation}: any) => {
   const [url, setUrl] = useState<string>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const configUrl = ConfigService.getUrl();
@@ -18,6 +19,7 @@ export const ServerConnection = ({navigation}: any) => {
   }, []);
 
   const testConnectionAndNavigate = async () => {
+    setLoading(true);
     try {
       const available = await ConnectionService.isRmtlyServerAvailable(
         url || '',
@@ -35,6 +37,7 @@ export const ServerConnection = ({navigation}: any) => {
       setUrl('');
       console.error(error);
     }
+    setLoading(false);
   };
 
   const navigateToAuthentication = () => {
@@ -60,6 +63,7 @@ export const ServerConnection = ({navigation}: any) => {
             value={url}
           />
           <Button
+            loading={loading}
             onPress={() => {
               testConnectionAndNavigate();
             }}>

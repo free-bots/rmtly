@@ -1,13 +1,8 @@
-import React from 'react';
-import {
-  ActivityIndicator,
-  StyleProp,
-  Text,
-  View,
-  ViewStyle,
-} from 'react-native';
+import React, {useContext} from 'react';
+import {ActivityIndicator, StyleProp, View, ViewStyle} from 'react-native';
 import {FallbackImage} from './FallbackImage';
-import {TouchableRipple} from 'react-native-paper';
+import {Text, TouchableRipple} from 'react-native-paper';
+import {ThemeContext} from '../../contexts/ThemeContext';
 
 export const ApplicationCard = ({
   onPress,
@@ -24,23 +19,17 @@ export const ApplicationCard = ({
   loading: boolean;
   style?: StyleProp<ViewStyle>;
 }) => {
+  const {dark, light, isLightTheme} = useContext(ThemeContext);
+  const theme = isLightTheme ? light : dark;
   return (
-    // <Card>
-    //   {/*<Card.Title title={name}/>*/}
-    //   {/*<Card.Content>*/}
-    //   {/*  <Title>Card title</Title>*/}
-    //   {/*  <Paragraph>Card content</Paragraph>*/}
-    //   {/*</Card.Content>*/}
-    //   <Card.Cover source={{ uri: icon }} />
-    // </Card>
     <TouchableRipple
       borderless={true}
       onPress={onPress}
       onLongPress={onLongPress}
-      rippleColor={'black'}
+      rippleColor={theme.colors.primary}
       style={{
         position: 'relative',
-        backgroundColor: '#fff',
+        backgroundColor: theme.colors.surface,
         borderRadius: 10,
         elevation: 5,
         ...((style as any) || {}),
