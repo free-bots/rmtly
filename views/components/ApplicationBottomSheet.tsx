@@ -64,32 +64,38 @@ class ApplicationBottomSheet extends Component<
     const {application} = this.state;
     return (
       <ActionSheet
+        bounceOnOpen={false}
         containerStyle={{
           backgroundColor: theme.colors.background,
         }}
         ref={this.actionSheetRef}
         gestureEnabled={true}
-        initialOffsetFromBottom={500}>
+        onClose={() => {}}>
         <View
           style={{
-            height: 500,
+            flex: 1,
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            height: 350,
           }}>
           {application && (
             <>
-              <FallbackImage
-                url={ApplicationService.getIcon(application.id)}
-                style={{height: 100, width: 100, alignSelf: 'center'}}
-              />
-              <Text
-                style={{
-                  alignSelf: 'center',
-                }}>
-                {application.name}
-              </Text>
+              <View>
+                <FallbackImage
+                  url={ApplicationService.getIcon(application.id)}
+                  style={{height: 100, width: 100, alignSelf: 'center'}}
+                />
+                <Text
+                  style={{
+                    alignSelf: 'center',
+                  }}>
+                  {application.name}
+                </Text>
+              </View>
               <DropDownPicker
                 arrowColor={theme.colors.primary}
                 showArrow={true}
-                dropDownMaxHeight={250}
+                dropDownMaxHeight={100}
                 items={delays}
                 autoScrollToDefaultValue={true}
                 defaultValue={this.state.executeDelay}

@@ -54,7 +54,6 @@ export const RootNavigator = () => {
           <BaseScreen>
             <View
               style={{
-                backgroundColor: theme.colors.background,
                 height: '100%',
                 alignItems: 'center',
                 justifyContent: 'center',
