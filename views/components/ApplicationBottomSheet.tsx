@@ -64,6 +64,7 @@ class ApplicationBottomSheet extends Component<
     const {application} = this.state;
     return (
       <ActionSheet
+        indicatorColor={theme.colors.primary}
         bounceOnOpen={false}
         containerStyle={{
           backgroundColor: theme.colors.background,

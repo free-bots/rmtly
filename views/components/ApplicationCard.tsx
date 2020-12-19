@@ -21,6 +21,10 @@ export const ApplicationCard = ({
 }) => {
   const {dark, light, isLightTheme} = useContext(ThemeContext);
   const theme = isLightTheme ? light : dark;
+
+  const maxSize = (style as any)?.height || 50;
+  const iconMaxSize = maxSize * 0.5;
+
   return (
     <TouchableRipple
       borderless={true}
@@ -30,29 +34,33 @@ export const ApplicationCard = ({
       style={{
         position: 'relative',
         backgroundColor: theme.colors.surface,
-        borderRadius: 10,
+        borderRadius: theme.roundness,
         elevation: 5,
         ...((style as any) || {}),
       }}>
       <View>
         <FallbackImage
           url={icon}
-          style={{height: 50, width: 50, alignSelf: 'center'}}
+          style={{height: iconMaxSize, width: iconMaxSize, alignSelf: 'center'}}
         />
-        <Text>{name}</Text>
+        <Text
+          ellipsizeMode={'tail'}
+          numberOfLines={1}
+          style={{
+            maxWidth: maxSize * 0.8,
+            textAlign: 'center',
+          }}>
+          {name}
+        </Text>
         {loading && (
           <ActivityIndicator
             size={'large'}
             color={'#7e23e8'}
             style={{
+              height: iconMaxSize,
+              width: iconMaxSize,
               position: 'absolute',
-              margin: 'auto',
-              height: '50%',
-              width: '50%',
-              top: 33,
-              left: 33,
-              right: 33,
-              bottom: 33,
+              alignSelf: 'center',
             }}
           />
         )}
