@@ -10,6 +10,7 @@ import {LoginContext} from '../../contexts/LoginContext';
 import {BaseScreen} from './base/BaseScreen';
 import {ThemeContext} from '../../contexts/ThemeContext';
 import {Text} from 'react-native-paper';
+import {SettingsNavigator} from './settings/SettingsNavigator';
 
 const Drawer = createDrawerNavigator();
 
@@ -81,7 +82,7 @@ export const RootNavigator = () => {
           detachInactiveScreens={true}>
           <Drawer.Screen name="Applications" component={Applications} />
           <Drawer.Screen name="Categories" component={CategoryNavigator} />
-          <Drawer.Screen name="Connection" component={LoginNavigator} />
+          <Drawer.Screen name="Settings" component={SettingsNavigator} />
         </Drawer.Navigator>
       )}
     </NavigationContainer>

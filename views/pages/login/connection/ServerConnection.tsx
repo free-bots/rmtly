@@ -44,15 +44,15 @@ export const ServerConnection = ({navigation}: any) => {
     navigation.navigate('ServerAuthentication');
   };
 
-  const navigateToQr = () => {
-    navigation.navigate('ServerAuthenticationQr');
-  };
-
   return (
     <>
       <BaseScreen>
-        <View>
-          <Button onPress={() => navigateToQr()}>Test</Button>
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}>
           <TextInput
             label={'URL'}
             mode={'outlined'}
@@ -68,12 +68,6 @@ export const ServerConnection = ({navigation}: any) => {
               testConnectionAndNavigate();
             }}>
             Login
-          </Button>
-          <Button
-            onPress={() => {
-              AuthenticationService.logOut();
-            }}>
-            logOut
           </Button>
         </View>
       </BaseScreen>

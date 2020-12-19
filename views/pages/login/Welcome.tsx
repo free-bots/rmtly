@@ -46,12 +46,6 @@ export const Welcome = ({navigation}: any) => {
             <Text>Hi</Text>
           </View>
           <Button
-            style={
-              {
-                // justifySelf: 'self-end',
-                // justifyContent: 'flex-end',
-              }
-            }
             onPress={() => {
               navigation.navigate('ServerConnection');
             }}>

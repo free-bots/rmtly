@@ -55,7 +55,7 @@ export const ApplicationCard = ({
         {loading && (
           <ActivityIndicator
             size={'large'}
-            color={'#7e23e8'}
+            color={theme.colors.primary}
             style={{
               height: iconMaxSize,
               width: iconMaxSize,

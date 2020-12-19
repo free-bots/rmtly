@@ -1,32 +1,54 @@
 import React, {useContext} from 'react';
-import {TextInput, View} from 'react-native';
+import {View} from 'react-native';
 import {useSignUp} from './hooks/SignUpHook';
 import {LoginContext} from '../../../../contexts/LoginContext';
 import Button from '../../../components/buttons/Button';
 import {BaseScreen} from '../../base/BaseScreen';
+import TextInput from '../../../components/TextInputs/TextInput';
+import {Text} from 'react-native-paper';
 
-export const ServerAuthentication = () => {
+export const ServerAuthentication = ({navigation}: any) => {
   const [loading, code, setCode, signUp] = useSignUp();
 
   const {loggedIn} = useContext(LoginContext);
 
+  const navigateToQr = () => {
+    navigation.navigate('ServerAuthenticationQr');
+  };
+
   return (
     <>
       <BaseScreen>
-        <View>
-          <Button
-            onPress={() => {
-              console.log('todo open qr scanner');
-            }}>
-            Scan QR
-          </Button>
-          <TextInput
-            placeholder={'code'}
-            value={code}
-            onChangeText={(text) => {
-              setCode(text);
-            }}
-          />
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}>
+          <View>
+            <TextInput
+              label={'Code'}
+              placeholder={'code'}
+              mode={'outlined'}
+              value={code}
+              onChangeText={(text: string) => {
+                setCode(text);
+              }}
+            />
+            <Text
+              style={{
+                margin: 20,
+                textAlign: 'center',
+              }}>
+              OR
+            </Text>
+            <Button
+              onPress={() => {
+                navigateToQr();
+              }}>
+              Scan QR
+            </Button>
+          </View>
           <Button
             loading={loading}
             onPress={() => {

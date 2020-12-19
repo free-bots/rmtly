@@ -1,4 +1,4 @@
-import {Alert, Text, TouchableOpacity} from 'react-native';
+import {Alert, Image, View} from 'react-native';
 import React, {useContext, useState} from 'react';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {useSignUp} from './hooks/SignUpHook';
@@ -8,9 +8,14 @@ import {BaseScreen} from '../../base/BaseScreen';
 
 export const ServerAuthenticationQr = () => {
   const [camera, setCamera] = useState<'back' | 'front'>('back');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, code, setCode, signUp] = useSignUp();
 
   const {loggedIn} = useContext(LoginContext);
+
+  const toggleCamera = () => {
+    setCamera(camera === 'back' ? 'front' : 'back');
+  };
 
   const onCode = (data: string) => {
     Alert.alert(
@@ -49,34 +54,39 @@ export const ServerAuthenticationQr = () => {
   return (
     <>
       <BaseScreen>
-        <Button
-          loading={loading}
-          onPress={() => {
-            onCode('test');
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'column',
+            justifyContent: 'space-between',
           }}>
-          {code}
-        </Button>
-        <QRCodeScanner
-          cameraProps={{
-            autoFocus: 'on',
-            // barCodeTypes: ['qr'],
-          }}
-          cameraType={camera}
-          showMarker={true}
-          vibrate={true}
-          onRead={(e) => {
-            console.log(e);
-            onCode(e.data);
-          }}
-          topContent={<Text>Top content</Text>}
-          bottomContent={
-            <TouchableOpacity>
-              <Text>OK. Got it!</Text>
-            </TouchableOpacity>
-          }
-        />
-        <Button onPress={() => setCamera('back')}>Back</Button>
-        <Button onPress={() => setCamera('front')}>Front</Button>
+          <QRCodeScanner
+            topViewStyle={{
+              flex: 1,
+            }}
+            cameraProps={{
+              autoFocus: 'on',
+              // barCodeTypes: ['qr'],
+            }}
+            cameraType={camera}
+            showMarker={true}
+            vibrate={true}
+            onRead={(e) => {
+              console.log(e);
+              onCode(e.data);
+            }}
+          />
+          <Button
+            icon={({size, color}: {size: number; color: string}) => (
+              <Image
+                source={require('../../../../assets/camera-flip.png')}
+                style={{width: size, height: size, tintColor: color}}
+              />
+            )}
+            onPress={() => toggleCamera()}>
+            Flip Camera
+          </Button>
+        </View>
       </BaseScreen>
     </>
   );
