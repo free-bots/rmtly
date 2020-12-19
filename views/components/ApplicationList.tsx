@@ -1,8 +1,9 @@
 import React from 'react';
-import {Dimensions, FlatList, ListRenderItemInfo} from 'react-native';
+import {Dimensions, FlatList, ListRenderItemInfo, View} from 'react-native';
 import {ApplicationCard} from './ApplicationCard';
 import ApplicationService from '../../services/Application.service';
 import {ApplicationEntry} from '../../models/ApplicationEntry';
+import {Empty} from './Empty';
 
 export interface ApplicationListEntry extends ApplicationEntry {
   executing: boolean;
@@ -33,37 +34,53 @@ export const ApplicationList = ({
 
   return (
     <>
-      <FlatList
-        refreshing={loading}
-        horizontal={false}
-        numColumns={numColumns}
-        onRefresh={onRefresh}
-        data={applications}
+      <View
         style={{
           flex: 1,
-        }}
-        renderItem={(itemInfo: ListRenderItemInfo<ApplicationListEntry>) => (
-          <ApplicationCard
-            onPress={() => {
-              onExecute(itemInfo.item);
-            }}
-            onLongPress={() => {
-              onDetails(itemInfo.item);
-            }}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              flex: calculateFlex(marginColumn, itemInfo.index),
-              margin: marginColumn,
-              height: Dimensions.get('window').width / numColumns,
-            }}
-            name={itemInfo.item.name}
-            icon={ApplicationService.getIcon(itemInfo.item.id)}
-            loading={itemInfo.item.executing}
-          />
-        )}
-        keyExtractor={(item, index) => item.id || String(index)}
-      />
+        }}>
+        <FlatList
+          contentContainerStyle={applications.length ? {} : {flex: 1}}
+          ListEmptyComponent={() => (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignSelf: 'center',
+              }}>
+              <Empty />
+            </View>
+          )}
+          refreshing={loading}
+          horizontal={false}
+          numColumns={numColumns}
+          onRefresh={onRefresh}
+          data={applications}
+          style={{
+            flex: 1,
+          }}
+          renderItem={(itemInfo: ListRenderItemInfo<ApplicationListEntry>) => (
+            <ApplicationCard
+              onPress={() => {
+                onExecute(itemInfo.item);
+              }}
+              onLongPress={() => {
+                onDetails(itemInfo.item);
+              }}
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                flex: calculateFlex(marginColumn, itemInfo.index),
+                margin: marginColumn,
+                height: Dimensions.get('window').width / numColumns,
+              }}
+              name={itemInfo.item.name}
+              icon={ApplicationService.getIcon(itemInfo.item.id)}
+              loading={itemInfo.item.executing}
+            />
+          )}
+          keyExtractor={(item, index) => item.id || String(index)}
+        />
+      </View>
     </>
   );
 };

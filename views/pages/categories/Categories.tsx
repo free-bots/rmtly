@@ -11,6 +11,7 @@ import {List} from 'react-native-paper';
 import {BaseScreen} from '../base/BaseScreen';
 import {ThemeContext} from '../../../contexts/ThemeContext';
 import {LoginContext} from '../../../contexts/LoginContext';
+import {Empty} from '../../components/Empty';
 
 export const Categories = ({navigation}: any) => {
   const [sortedApplications, setSortedApplications] = useState<
@@ -79,8 +80,24 @@ export const Categories = ({navigation}: any) => {
   return (
     <>
       <BaseScreen>
-        <View>
+        <View
+          style={{
+            flex: 1,
+          }}>
           <FlatList
+            contentContainerStyle={
+              sortedApplications?.values?.length ? {} : {flex: 1}
+            }
+            ListEmptyComponent={() => (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignSelf: 'center',
+                }}>
+                <Empty />
+              </View>
+            )}
             refreshing={loading}
             onRefresh={() => {
               onRefresh();
