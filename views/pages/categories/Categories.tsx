@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {FlatList, ListRenderItemInfo, View} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import ApplicationService from '../../../services/Application.service';
@@ -9,6 +10,7 @@ import {
 import {List} from 'react-native-paper';
 import {BaseScreen} from '../base/BaseScreen';
 import {ThemeContext} from '../../../contexts/ThemeContext';
+import {LoginContext} from '../../../contexts/LoginContext';
 
 export const Categories = ({navigation}: any) => {
   const [sortedApplications, setSortedApplications] = useState<
@@ -16,19 +18,25 @@ export const Categories = ({navigation}: any) => {
   >();
 
   const [loading, setLoading] = useState(false);
+  const {isAuthenticated} = useContext(LoginContext);
   const {dark, light, isLightTheme} = useContext(ThemeContext);
   const theme = isLightTheme ? light : dark;
 
   useEffect(() => {
-    fetchApplicationsSortedByCategory();
+    let interval: any = null;
 
-    const interval = setInterval(() => {
+    if (isAuthenticated) {
       fetchApplicationsSortedByCategory();
-    }, 10000);
+
+      interval = setInterval(() => {
+        fetchApplicationsSortedByCategory();
+      }, 10000);
+    }
+
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [isAuthenticated]);
 
   const onRefresh = () => {
     fetchApplicationsSortedByCategory();
@@ -41,12 +49,16 @@ export const Categories = ({navigation}: any) => {
         fetchedApplications.values.sort((a, b) =>
           a.sortedValue.localeCompare(b.sortedValue),
         );
-        setLoading(false);
-        setSortedApplications(fetchedApplications);
+        if (isAuthenticated) {
+          setLoading(false);
+          setSortedApplications(fetchedApplications);
+        }
       })
       .catch((error) => {
         console.error(error);
-        setLoading(false);
+        if (isAuthenticated) {
+          setLoading(false);
+        }
       });
   };
 

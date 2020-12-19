@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {createRef, useContext, useEffect, useState} from 'react';
 import {
   ApplicationList,
@@ -9,6 +10,7 @@ import ApplicationService from '../../services/Application.service';
 import {BaseScreen} from './base/BaseScreen';
 import {Searchbar, Surface} from 'react-native-paper';
 import {ThemeContext} from '../../contexts/ThemeContext';
+import {LoginContext} from '../../contexts/LoginContext';
 
 export const Applications = ({route}: any) => {
   const category = route.params?.category as {
@@ -18,6 +20,7 @@ export const Applications = ({route}: any) => {
   const [loading, setLoading] = useState(false);
   const [applications, setApplications] = useState<ApplicationListEntry[]>([]);
   const [search, setSearch] = useState<string>('');
+  const {isAuthenticated} = useContext(LoginContext);
   const {dark, light, isLightTheme} = useContext(ThemeContext);
   const theme = isLightTheme ? light : dark;
 
@@ -27,17 +30,19 @@ export const Applications = ({route}: any) => {
       return;
     }
 
-    fetchApplications();
+    let refreshInterval: any = null;
 
-    const refreshInterval = setInterval(() => {
+    if (isAuthenticated) {
       fetchApplications();
-    }, 10000);
+      refreshInterval = setInterval(() => {
+        fetchApplications();
+      }, 10000);
+    }
 
     return () => {
       clearInterval(refreshInterval);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isAuthenticated]);
 
   const equalsOrInclude = (a: string, b: string): boolean => {
     if (!a || !b) {
@@ -72,13 +77,17 @@ export const Applications = ({route}: any) => {
     setLoading(true);
     ApplicationService.getAllApplications()
       .then((fetchedApplications) => {
-        setApplications(transformExecution(fetchedApplications, false));
-        setLoading(false);
+        if (isAuthenticated) {
+          setApplications(transformExecution(fetchedApplications, false));
+          setLoading(false);
+        }
       })
       .catch((error) => {
         console.error(error);
-        setApplications([]);
-        setLoading(false);
+        if (isAuthenticated) {
+          setApplications([]);
+          setLoading(false);
+        }
       });
   };
 
