@@ -35,13 +35,17 @@ export const ApplicationCard = ({
         position: 'relative',
         backgroundColor: theme.colors.surface,
         borderRadius: theme.roundness,
-        elevation: 5,
+        elevation: 1,
         ...((style as any) || {}),
       }}>
       <View>
         <FallbackImage
           url={icon}
-          style={{height: iconMaxSize, width: iconMaxSize, alignSelf: 'center'}}
+          style={{
+            height: iconMaxSize,
+            width: iconMaxSize,
+            alignSelf: 'center',
+          }}
         />
         <Text
           ellipsizeMode={'tail'}

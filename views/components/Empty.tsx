@@ -34,7 +34,7 @@ export const Empty = () => {
           fontSize: 15,
           textAlign: 'center',
         }}>
-        Nothing here .. ?
+        Nothing here ... ?
       </Text>
     </>
   );

@@ -1,10 +1,14 @@
-import {Text, View} from 'react-native';
-import React from 'react';
+import {Image, Text, View} from 'react-native';
+import React, {useContext} from 'react';
 import {BaseScreen} from '../base/BaseScreen';
 import Button from '../../components/buttons/Button';
-import {Avatar, Surface} from 'react-native-paper';
+import {Surface} from 'react-native-paper';
+import {ThemeContext} from '../../../contexts/ThemeContext';
 
 export const Welcome = ({navigation}: any) => {
+  const {isLightTheme, light, dark} = useContext(ThemeContext);
+  const theme = isLightTheme ? light : dark;
+
   return (
     <>
       <BaseScreen>
@@ -23,17 +27,17 @@ export const Welcome = ({navigation}: any) => {
             <Surface
               style={{
                 borderRadius: 100,
-                height: 80,
-                width: 80,
+                height: 100,
+                width: 100,
                 alignItems: 'center',
                 justifyContent: 'center',
                 elevation: 40,
               }}>
-              <Avatar.Icon
-                icon={'folder'}
+              <Image
                 style={{
-                  alignSelf: 'center',
+                  tintColor: theme.colors.primary,
                 }}
+                source={require('../../../assets/robot-excited.png')}
               />
             </Surface>
           </View>
@@ -42,8 +46,21 @@ export const Welcome = ({navigation}: any) => {
               flex: 2,
               alignSelf: 'center',
             }}>
-            <Text>Hi</Text>
-            <Text>Hi</Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontSize: 20,
+                color: theme.colors.primary,
+              }}>
+              Welcome to rmtly
+            </Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontSize: 17,
+              }}>
+              Let's get started by login in your pc
+            </Text>
           </View>
           <Button
             onPress={() => {

@@ -12,7 +12,7 @@ import {Text} from 'react-native-paper';
 const delays: {label: string; value: number}[] = [0, 3, 5, 10, 30, 60].map(
   (time) => ({
     label: `${time} Sec`,
-    value: time,
+    value: time * 1000,
   }),
 );
 
@@ -123,9 +123,10 @@ class ApplicationBottomSheet extends Component<
                 selectedLabelStyle={{
                   color: theme.colors.primary,
                 }}
-                onChangeItem={(item) =>
-                  this.setState({executeDelay: Number(item.value)})
-                }
+                onChangeItem={(item) => {
+                  console.log(item);
+                  this.setState({executeDelay: Number(item.value)});
+                }}
               />
               <Button
                 onPress={() => {
