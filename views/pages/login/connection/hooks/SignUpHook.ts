@@ -5,20 +5,20 @@ export const useSignUp = (): [
   boolean,
   string,
   Dispatch<SetStateAction<string>>,
-  () => Promise<void>,
+  (codeRef?: string) => Promise<void>,
 ] => {
   const [code, setCode] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
-  const signUp = () => {
+  const signUp = (codeRef?: string) => {
     setLoading(true);
-    if (!code) {
+    if (!code && !codeRef) {
       return Promise.reject('no code!');
     }
 
     return AuthenticationService.signUp({
       deviceId: '',
-      qrCode: code,
+      qrCode: codeRef || code,
     })
       .then((response) => {
         console.log(response);

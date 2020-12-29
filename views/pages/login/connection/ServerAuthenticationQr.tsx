@@ -7,6 +7,8 @@ import Button from '../../../components/buttons/Button';
 import {BaseScreen} from '../../base/BaseScreen';
 
 export const ServerAuthenticationQr = () => {
+  let qr: QRCodeScanner | null;
+
   const [camera, setCamera] = useState<'back' | 'front'>('back');
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, code, setCode, signUp] = useSignUp();
@@ -17,7 +19,7 @@ export const ServerAuthenticationQr = () => {
     setCamera(camera === 'back' ? 'front' : 'back');
   };
 
-  const onCode = (data: string) => {
+  const onCode = (qrRef: QRCodeScanner, data: string) => {
     Alert.alert(
       'Scanned QR code',
       `Is ${data} your code?`,
@@ -25,22 +27,20 @@ export const ServerAuthenticationQr = () => {
         {
           text: 'Yes',
           onPress: () => {
-            signUp()
+            signUp(data)
               .then(() => {
                 loggedIn();
               })
               .catch(() => {
-                // state is cleared
-                // try again
+                qrRef.reactivate();
               });
-            // navigate
           },
         },
         {
           text: 'No',
           onPress: () => {
             setCode('');
-            // retry scan
+            qrRef.reactivate();
           },
         },
       ],
@@ -61,6 +61,7 @@ export const ServerAuthenticationQr = () => {
             justifyContent: 'space-between',
           }}>
           <QRCodeScanner
+            ref={(node) => (qr = node)}
             topViewStyle={{
               flex: 1,
             }}
@@ -73,7 +74,9 @@ export const ServerAuthenticationQr = () => {
             vibrate={true}
             onRead={(e) => {
               console.log(e);
-              onCode(e.data);
+              if (qr) {
+                onCode(qr, e.data);
+              }
             }}
           />
           <Button
