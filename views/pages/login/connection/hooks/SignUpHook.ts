@@ -7,7 +7,7 @@ export const useSignUp = (): [
   Dispatch<SetStateAction<string>>,
   () => Promise<void>,
 ] => {
-  const [code, setCode] = useState<string>('authenticationCode');
+  const [code, setCode] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
   const signUp = () => {
