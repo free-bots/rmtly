@@ -1,11 +1,13 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
  *
- * Generated with the TypeScript template
- * https://github.com/react-native-community/react-native-template-typescript
- *
- * @format
+ *                   _   _
+ *                  | | | |
+ *   _ __ _ __ ___ | |_| |_   _
+ *  | '__| '_ ` _ \| __| | | | |
+ *  | |  | | | | | | |_| | |_| |
+ *  |_|  |_| |_| |_|\__|_|\__, |
+ *                         __/ |
+ *                        |___/
  */
 
 import React, {useContext, useEffect} from 'react';
