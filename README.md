@@ -1,9 +1,9 @@
 # Rmtly
 ![](./.README/header.png)
 
-<p style="text-align: center">Mobile app for remote control your pc 💻️</p>
+<p align="center">Mobile app for remote control your pc 💻️</p>
 
-<p style="text-align: center">
+<p align="center">
     <a href="https://github.com/free-bots/rmtly/releases" alt="GitHub release (latest by date)">
         <img alt="GitHub" src="https://img.shields.io/github/v/release/free-bots/TemperatureGauge?style=flat-square"></a>
     <a href="https://github.com/free-bots/rmtly/blob/master/LICENSE.md" alt="License">
