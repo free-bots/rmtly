@@ -5,9 +5,9 @@
 
 <p align="center">
     <a href="https://github.com/free-bots/rmtly/releases" alt="GitHub release (latest by date)">
-        <img alt="GitHub" src="https://img.shields.io/github/v/release/free-bots/TemperatureGauge?style=flat-square"></a>
+        <img alt="GitHub" src="https://img.shields.io/github/v/release/free-bots/rmtly?style=flat-square"></a>
     <a href="https://github.com/free-bots/rmtly/blob/master/LICENSE.md" alt="License">
-        <img alt="GitHub" src="https://img.shields.io/github/license/free-bots/TemperatureGauge?style=flat-square"></a>
+        <img alt="GitHub" src="https://img.shields.io/github/license/free-bots/rmtly?style=flat-square"></a>
     <a href="https://github.com/free-bots/rmtly/graphs/contributors" alt="Contributors">
         <img alt="GitHub" src="https://img.shields.io/github/contributors/free-bots/rmtly?style=flat-square"></a>
 </p>
