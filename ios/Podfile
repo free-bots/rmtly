@@ -17,6 +17,8 @@ target 'rmtly' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
+
   target 'rmtlyTests' do
     inherit! :complete
     # Pods for testing

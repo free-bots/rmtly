@@ -11,15 +11,14 @@ import {BaseScreen} from './base/BaseScreen';
 import {ThemeContext} from '../../contexts/ThemeContext';
 import {Text} from 'react-native-paper';
 import {SettingsNavigator} from './settings/SettingsNavigator';
+import {DrawerContent} from '../components/drawer/DrawerContent';
 
 const Drawer = createDrawerNavigator();
 
 export const RootNavigator = () => {
   const {dark, light, isLightTheme} = useContext(ThemeContext);
 
-  const {headerVisible, enableHeader, disableHeader} = useContext(
-    NavigationHeaderContext,
-  );
+  const {headerVisible, enableHeader, disableHeader} = useContext(NavigationHeaderContext);
 
   const {loading, isAuthenticated} = useContext(LoginContext);
 
@@ -31,10 +30,7 @@ export const RootNavigator = () => {
     const index = change.index;
     const currentNavigationState = change.routes[index].state;
 
-    if (
-      currentNavigationState?.type === 'stack' &&
-      currentNavigationState?.index > 0
-    ) {
+    if (currentNavigationState?.type === 'stack' && currentNavigationState?.index > 0) {
       // in a nested navigator
       disableHeader();
     } else {
@@ -74,6 +70,7 @@ export const RootNavigator = () => {
       {!loading && !isAuthenticated && <LoginNavigator />}
       {!loading && isAuthenticated && (
         <Drawer.Navigator
+          drawerContent={DrawerContent}
           initialRouteName="Home"
           screenOptions={{
             headerTintColor: theme.colors.text,
