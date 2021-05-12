@@ -11,14 +11,8 @@ export const LoginNavigator = () => {
     <Stack.Navigator initialRouteName="Welcome" headerMode={'screen'}>
       <Stack.Screen name="Welcome" component={Welcome} />
       <Stack.Screen name="ServerConnection" component={ServerConnection} />
-      <Stack.Screen
-        name="ServerAuthentication"
-        component={ServerAuthentication}
-      />
-      <Stack.Screen
-        name="ServerAuthenticationQr"
-        component={ServerAuthenticationQr}
-      />
+      <Stack.Screen name="ServerAuthentication" component={ServerAuthentication} />
+      <Stack.Screen name="ServerAuthenticationQr" component={ServerAuthenticationQr} />
     </Stack.Navigator>
   );
 };

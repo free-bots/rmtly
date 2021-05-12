@@ -21,14 +21,10 @@ export const ServerConnection = ({navigation}: any) => {
   const testConnectionAndNavigate = async () => {
     setLoading(true);
     try {
-      const available = await ConnectionService.isRmtlyServerAvailable(
-        url || '',
-      );
+      const available = await ConnectionService.isRmtlyServerAvailable(url || '');
       if (!available) {
         throw new Error();
       }
-
-      await ConfigService.setUrl(url || '');
 
       await AuthenticationService.createCode();
 
@@ -41,7 +37,7 @@ export const ServerConnection = ({navigation}: any) => {
   };
 
   const navigateToAuthentication = () => {
-    navigation.navigate('ServerAuthentication');
+    navigation.navigate('ServerAuthentication', {url: url});
   };
 
   return (

@@ -11,7 +11,7 @@
  */
 
 import React, {useEffect} from 'react';
-import {RootNavigator} from './views/pages/RootNavigator';
+import {RootNavigator} from './views/screens/RootNavigator';
 import {ConfigService} from './services/Config.service';
 import {RootContextProvider} from './contexts/RootContextProvider';
 import {ConnectivityCheck} from './views/components/connectivity/ConnectivityCheck';

@@ -1,17 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {FlatList, ListRenderItemInfo, View} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
-import ApplicationService from '../../../services/Application.service';
+import ApplicationService from '../../../../services/Application.service';
 import {
   SortedApplicationResponse,
   SortedValue,
   SortKey,
-} from '../../../models/Response.model';
+} from '../../../../models/Response.model';
 import {List} from 'react-native-paper';
-import {BaseScreen} from '../base/BaseScreen';
-import {ThemeContext} from '../../../contexts/ThemeContext';
-import {LoginContext} from '../../../contexts/LoginContext';
-import {Empty} from '../../components/Empty';
+import {BaseScreen} from '../../base/BaseScreen';
+import {ThemeContext} from '../../../../contexts/ThemeContext';
+import {LoginContext} from '../../../../contexts/LoginContext';
+import {Empty} from '../../../components/Empty';
 
 export const Categories = ({navigation}: any) => {
   const [sortedApplications, setSortedApplications] = useState<

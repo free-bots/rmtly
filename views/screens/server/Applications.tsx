@@ -3,14 +3,14 @@ import React, {createRef, useContext, useEffect, useState} from 'react';
 import {
   ApplicationList,
   ApplicationListEntry,
-} from '../components/ApplicationList';
-import {ApplicationEntry} from '../../models/ApplicationEntry';
-import ApplicationBottomSheet from '../components/ApplicationBottomSheet';
-import ApplicationService from '../../services/Application.service';
-import {BaseScreen} from './base/BaseScreen';
+} from '../../components/ApplicationList';
+import {ApplicationEntry} from '../../../models/ApplicationEntry';
+import ApplicationBottomSheet from '../../components/ApplicationBottomSheet';
+import ApplicationService from '../../../services/Application.service';
+import {BaseScreen} from '../base/BaseScreen';
 import {Searchbar, Surface} from 'react-native-paper';
-import {ThemeContext} from '../../contexts/ThemeContext';
-import {LoginContext} from '../../contexts/LoginContext';
+import {ThemeContext} from '../../../contexts/ThemeContext';
+import {LoginContext} from '../../../contexts/LoginContext';
 
 export const Applications = ({route}: any) => {
   const category = route.params?.category as {

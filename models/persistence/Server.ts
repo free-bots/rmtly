@@ -1,10 +1,10 @@
 import {Authentication} from './Authentication';
-import {Configuration} from './Configuration';
+import {ServerConfiguration} from './ServerConfiguration';
 
 export interface Server {
   id: string;
   name: string;
   url: string;
   authentication: Authentication;
-  configuration?: Configuration;
+  configuration?: ServerConfiguration;
 }
