@@ -4,6 +4,15 @@
 <p align="center">Mobile app for remote control your pc 💻️</p>
 
 <p align="center">
+  <img height="450" alt="home" src="./.README/home.jpg">
+  <img height="450" alt="search" src="./.README/search.jpg">
+  <img height="450" alt="category" src="./.README/category.jpg">
+  <img height="450" alt="drawer" src="./.README/drawer.jpg">
+  <img height="450" alt="drawer_dark" src="./.README/drawer_dark.jpg">
+  <img height="450" alt="servers" src="./.README/servers.jpg">
+</p>
+
+<p align="center">
     <a href="https://github.com/free-bots/rmtly/releases" alt="GitHub release (latest by date)">
         <img alt="GitHub" src="https://img.shields.io/github/v/release/free-bots/rmtly?style=flat-square"></a>
     <a href="https://github.com/free-bots/rmtly/blob/master/LICENSE.md" alt="License">
