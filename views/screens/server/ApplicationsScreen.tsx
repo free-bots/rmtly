@@ -1,18 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {createRef, useContext, useEffect, useState} from 'react';
-import {
-  ApplicationList,
-  ApplicationListEntry,
-} from '../../components/ApplicationList';
+import React, {createRef, useCallback, useContext, useEffect, useState} from 'react';
+import {ApplicationList, ApplicationListEntry} from '../../components/ApplicationList';
 import {ApplicationEntry} from '../../../models/ApplicationEntry';
 import ApplicationBottomSheet from '../../components/ApplicationBottomSheet';
-import ApplicationService from '../../../services/Application.service';
 import {BaseScreen} from '../base/BaseScreen';
 import {Searchbar, Surface} from 'react-native-paper';
 import {ThemeContext} from '../../../contexts/ThemeContext';
 import {LoginContext} from '../../../contexts/LoginContext';
+import {ApplicationContext} from '../../../services/ApplicationContext';
+import {ServerContext} from '../../../contexts/ServerContext';
+import {useFocusEffect} from '@react-navigation/native';
 
-export const Applications = ({route}: any) => {
+export const ApplicationsScreen = ({route}: any) => {
   const category = route.params?.category as {
     title: string;
     applications: ApplicationEntry[];
@@ -24,25 +23,37 @@ export const Applications = ({route}: any) => {
   const {dark, light, isLightTheme} = useContext(ThemeContext);
   const theme = isLightTheme ? light : dark;
 
+  const {getAllApplications, executeApplication} = useContext(ApplicationContext);
+
+  const {serverState} = useContext(ServerContext);
+
+  useFocusEffect(
+    useCallback(() => {
+      console.log('useFocusEffect Application');
+      console.log(`ìsAuthenticated: ${isAuthenticated}`);
+      if (category) {
+        console.log(category.applications.length);
+        setApplications(transformExecution(category.applications, false));
+        return;
+      }
+
+      let refreshInterval: any = null;
+
+      const server = serverState.currentServer;
+      if (isAuthenticated) {
+        fetchApplications(server?.id as any);
+        refreshInterval = setInterval(fetchApplications, 10000, server?.id);
+      }
+
+      return () => {
+        clearInterval(refreshInterval);
+      };
+    }, [isAuthenticated, serverState.currentServer, getAllApplications]),
+  );
+
   useEffect(() => {
-    if (category) {
-      setApplications(transformExecution(category.applications, false));
-      return;
-    }
-
-    let refreshInterval: any = null;
-
-    if (isAuthenticated) {
-      fetchApplications();
-      refreshInterval = setInterval(() => {
-        fetchApplications();
-      }, 10000);
-    }
-
-    return () => {
-      clearInterval(refreshInterval);
-    };
-  }, [isAuthenticated]);
+    console.log(applications.length);
+  }, [applications]);
 
   const equalsOrInclude = (a: string, b: string): boolean => {
     if (!a || !b) {
@@ -53,30 +64,28 @@ export const Applications = ({route}: any) => {
     return a.includes(b);
   };
 
-  const filterBySearch = (
-    unfilteredApplications: ApplicationListEntry[],
-    filter: string,
-  ) => {
+  const filterBySearch = (unfilteredApplications: ApplicationListEntry[], filter: string) => {
     return unfilteredApplications.filter((currentApplication) =>
-      [
-        equalsOrInclude(currentApplication.id, filter),
-        equalsOrInclude(currentApplication.name, filter),
-      ].reduce((previousValue, currentValue) => previousValue || currentValue),
+      [equalsOrInclude(currentApplication.id, filter), equalsOrInclude(currentApplication.name, filter)].reduce(
+        (previousValue, currentValue) => previousValue || currentValue,
+      ),
     );
   };
 
-  const applicationButtonSheetRef: any = createRef<
-    typeof ApplicationBottomSheet
-  >();
+  const applicationButtonSheetRef: any = createRef<typeof ApplicationBottomSheet>();
 
   const openApplicationDetails = (application: ApplicationEntry) => {
     applicationButtonSheetRef.current?.open(application);
   };
 
-  const fetchApplications = () => {
+  const fetchApplications = (serverId: string) => {
     setLoading(true);
-    ApplicationService.getAllApplications()
+    getAllApplications()
       .then((fetchedApplications) => {
+        if (serverState.currentServer?.id !== serverId) {
+          setLoading(false);
+          return;
+        }
         if (isAuthenticated) {
           setApplications(transformExecution(fetchedApplications, false));
           setLoading(false);
@@ -95,12 +104,13 @@ export const Applications = ({route}: any) => {
     source: ApplicationListEntry[] | ApplicationEntry[],
     executing: boolean,
   ): ApplicationListEntry[] => {
-    source.sort((a, b) => a.name.localeCompare(b.name));
-    return (source as any).map(
-      (application: ApplicationEntry | ApplicationListEntry) => ({
-        ...application,
-        executing: executing,
-      }),
+    return (
+      source
+        ?.sort((a, b) => a.name.localeCompare(b.name))
+        .map((application: ApplicationEntry | ApplicationListEntry) => ({
+          ...application,
+          executing: executing,
+        })) || []
     );
   };
 
@@ -119,7 +129,7 @@ export const Applications = ({route}: any) => {
 
   const execute = (application: ApplicationEntry) => {
     setExecuting(application.id, true);
-    ApplicationService.executeApplication(application.id, {executeDelay: 0})
+    executeApplication(application.id, {executeDelay: 0})
       .then(() => {
         setApplications(transformExecution(applications, false));
       })
@@ -134,7 +144,7 @@ export const Applications = ({route}: any) => {
       return;
     }
 
-    fetchApplications();
+    fetchApplications(serverState.currentServer?.id as any);
   };
 
   return (

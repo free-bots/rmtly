@@ -1,8 +1,8 @@
 import React, {useContext} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import {Categories} from './Categories';
+import {CategoriesScreen} from './CategoriesScreen';
 import {NavigationHeaderContext} from '../../../../contexts/NavigationHeaderContext';
-import {Applications} from '../Applications';
+import {ApplicationsScreen} from '../ApplicationsScreen';
 
 const Stack = createStackNavigator();
 export const CategoryNavigator = () => {
@@ -11,10 +11,10 @@ export const CategoryNavigator = () => {
     <Stack.Navigator
       initialRouteName="Categories"
       headerMode={headerVisible ? 'none' : 'screen'}>
-      <Stack.Screen name="Categories" component={Categories} />
+      <Stack.Screen name="Categories" component={CategoriesScreen} />
       <Stack.Screen
         name="Category"
-        component={Applications}
+        component={ApplicationsScreen}
         options={({route}) => ({title: (route.params as any)?.category?.title})}
       />
     </Stack.Navigator>

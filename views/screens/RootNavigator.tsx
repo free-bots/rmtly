@@ -6,6 +6,7 @@ import {LoginContext} from '../../contexts/LoginContext';
 import {ThemeContext} from '../../contexts/ThemeContext';
 import {SplashScreen} from './SplashScreen';
 import {DrawerNavigator} from './server/DrawerNavigator';
+import {ServerContext} from '../../contexts/ServerContext';
 
 export const RootNavigator = () => {
   const {dark, light, isLightTheme} = useContext(ThemeContext);
@@ -13,12 +14,16 @@ export const RootNavigator = () => {
   const {enableHeader, disableHeader} = useContext(NavigationHeaderContext);
 
   const {loading, isAuthenticated} = useContext(LoginContext);
+  const {serverState} = useContext(ServerContext);
 
   /**
    * toggles the header in the navigation to prevent multiple headers for each navigator
    * @param change
    */
   const handleNavigationChange = (change: any) => {
+    if (!change) {
+      return;
+    }
     const index = change.index;
     const currentNavigationState = change.routes[index].state;
 
@@ -40,7 +45,7 @@ export const RootNavigator = () => {
       }}>
       {loading && <SplashScreen />}
       {!loading && !isAuthenticated && <LoginNavigator />}
-      {!loading && isAuthenticated && <DrawerNavigator />}
+      {!loading && serverState.currentServer && isAuthenticated && <DrawerNavigator />}
     </NavigationContainer>
   );
 };

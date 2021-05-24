@@ -6,12 +6,8 @@ export class ExecuteRequest {
   }
 }
 
-export class SignUpRequest {
-  public qrCode: string;
-  public deviceId: string;
-
-  constructor(qrCode: string, deviceId: string) {
-    this.qrCode = qrCode;
-    this.deviceId = deviceId;
-  }
+export interface SignUpRequest {
+  url: string;
+  qrCode: string;
+  deviceId: string;
 }

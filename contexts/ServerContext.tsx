@@ -3,97 +3,144 @@ import {Server} from '../models/persistence/Server';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {toJson, toObject} from '../utils/JsonConverter';
 
-export interface ServerContextType {
+export interface ServerState {
   currentServer: Server | null;
-  setCurrentServer: (id: string) => void;
   servers: Server[];
-  add: (server: Server) => void;
-  update: (server: Server) => void;
-  delete: (id: string) => string;
+  initializing: boolean;
 }
 
-export const ServerContext = createContext<ServerContextType>({
+export interface ServerContextType {
+  serverState: ServerState;
+  setCurrentServer: (id: string) => Promise<void>;
+  add: (server: Server) => Promise<void>;
+  update: (server: Server) => Promise<void>;
+  deleteById: (id: string) => Promise<string>;
+}
+
+const initialState: ServerState = {
   currentServer: null,
-  setCurrentServer: () => {},
+  initializing: true,
   servers: [],
-  add: () => {},
-  update: () => {},
-  delete: () => '',
+};
+
+export const ServerContext = createContext<ServerContextType>({
+  serverState: initialState,
+  setCurrentServer: () => Promise.resolve(),
+  add: () => Promise.resolve(),
+  update: () => Promise.resolve(),
+  deleteById: () => Promise.resolve(''),
 });
 
 export const ServerContextProvider = (props: any) => {
   const SERVER_KEY = 'SERVERS';
   const CURRENT_SERVER_KEY = 'CURRENT_SERVER';
 
-  const [servers, setServers] = useState<Server[]>([]);
-  const [currentServer, _setCurrentServer] = useState<Server | null>(null);
+  const [serverState, setServerState] = useState<ServerState>(initialState);
 
   useEffect(() => {
-    loadFromStorage();
+    loadFromStorage().then(async () => {
+      console.log('loaded server list');
+    });
   }, []);
 
-  const add = (server: Server): void => {
+  const add = async (server: Server): Promise<void> => {
+    console.log(`add: ${server.id}`);
     // create new uuid ?
-    const newServerList = [...servers, server];
-    setServers(newServerList);
-    AsyncStorage.setItem(SERVER_KEY, toJson(newServerList));
+    const newServerList = [...serverState.servers, server];
+    await AsyncStorage.setItem(SERVER_KEY, toJson(newServerList));
+    await AsyncStorage.setItem(CURRENT_SERVER_KEY, server.id);
+
+    setServerState((prevState) => ({
+      ...prevState,
+      servers: newServerList,
+      currentServer: getCurrentServer(server.id, newServerList),
+    }));
   };
 
-  const update = (server: Server): void => {
-    const newServerList = [...servers.filter((currentServer) => currentServer.id === server.id), server];
-    setServers(newServerList);
-    AsyncStorage.setItem(SERVER_KEY, toJson(newServerList));
+  const update = async (server: Server): Promise<void> => {
+    const newServerList = [...serverState.servers.filter((currentServer) => currentServer.id === server.id), server];
+    await AsyncStorage.setItem(SERVER_KEY, toJson(newServerList));
+    setServerState((prevState) => ({...prevState, servers: newServerList}));
   };
 
-  const deleteServer = (id: string): string => {
-    const newServerList = [...servers.filter((currentServer) => currentServer.id === id)];
-    setServers(newServerList);
-    AsyncStorage.setItem(SERVER_KEY, toJson(newServerList));
+  const deleteById = async (id: string): Promise<string> => {
+    const newServerList = [...serverState.servers.filter((server) => server.id !== id)];
+    setServerState((prevState) => ({...prevState, servers: newServerList}));
+    await AsyncStorage.setItem(SERVER_KEY, toJson(newServerList));
+
+    if (serverState.currentServer?.id === id) {
+      const firstServerId = newServerList.length > 0 ? newServerList[0].id : null;
+      if (firstServerId) {
+        await setCurrentServer(firstServerId);
+      } else {
+        await setCurrentServer(null);
+      }
+    }
+
     return id;
   };
 
-  const setCurrentServer = (id: string) => {
-    const _currentServer = servers.find((value) => value.id === id);
-    if (!_currentServer) {
-      _setCurrentServer(null);
+  const setCurrentServer = async (id: string | null) => {
+    console.log(`setCurrentServer: ${id}`);
+    const _currentServer = serverState.servers.find((value) => value.id === id);
+    if (!_currentServer || !id) {
+      await AsyncStorage.removeItem(CURRENT_SERVER_KEY);
+      setServerState((prevState) => ({...prevState, currentServer: null}));
       return;
     }
 
-    _setCurrentServer(_currentServer);
+    console.log(`CURRENT_SERVER: [${id}]`);
+
+    setServerState((prevState) => ({...prevState, currentServer: _currentServer}));
+    await AsyncStorage.setItem(CURRENT_SERVER_KEY, id);
   };
 
   const loadFromStorage = async () => {
+    setServerState((prevState) => ({...prevState, initializing: true}));
     try {
       const serversAsJson = await AsyncStorage.getItem(SERVER_KEY);
-      if (!serversAsJson) {
-        _setCurrentServer(null);
-        setServers([]);
-        return;
-      }
-
-      const serverList = toObject<Server[]>(serversAsJson) || [];
-      setServers(serverList);
-
       const currentServerId = await AsyncStorage.getItem(CURRENT_SERVER_KEY);
-      if (!currentServerId) {
-        return;
-      }
+      console.log(`currentServerId: ${currentServerId}`);
 
-      setCurrentServer(currentServerId);
+      if (serversAsJson) {
+        const serverList = toObject<Server[]>(serversAsJson) || [];
+        setServerState((prevState) => ({
+          ...prevState,
+          servers: serverList,
+          currentServer: getCurrentServer(currentServerId, serverList),
+        }));
+      }
     } catch (e) {
       console.error(e);
+    } finally {
+      setServerState((prevState) => ({...prevState, initializing: false}));
     }
+  };
+
+  const getCurrentServer = (currentServerId: string | null | undefined, servers: Server[]): Server | null => {
+    if (!currentServerId && servers.length) {
+      return servers[0];
+    }
+
+    if (currentServerId && servers.length) {
+      return servers.find((server) => server.id === currentServerId) || null;
+    }
+
+    if (currentServerId && !servers.length) {
+      return null;
+    }
+
+    return null;
   };
 
   return (
     <ServerContext.Provider
       value={{
-        currentServer,
+        serverState,
         setCurrentServer,
-        servers,
         add,
         update,
-        delete: deleteServer,
+        deleteById,
       }}>
       {props.children}
     </ServerContext.Provider>

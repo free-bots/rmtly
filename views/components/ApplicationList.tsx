@@ -1,9 +1,11 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Dimensions, FlatList, ListRenderItemInfo, View} from 'react-native';
 import {ApplicationCard} from './ApplicationCard';
-import ApplicationService from '../../services/Application.service';
 import {ApplicationEntry} from '../../models/ApplicationEntry';
 import {Empty} from './Empty';
+import {ApplicationContext} from '../../services/ApplicationContext';
+import {ServerContext} from '../../contexts/ServerContext';
+import {Server} from '../../models/persistence/Server';
 
 export interface ApplicationListEntry extends ApplicationEntry {
   executing: boolean;
@@ -27,10 +29,11 @@ export const ApplicationList = ({
 
   const calculateFlex = (margin: number, index: number) => {
     const modulo = applications.length % numColumns;
-    return modulo !== 0 && index >= applications.length - modulo
-      ? 1 / (numColumns + 5 / 100)
-      : 1;
+    return modulo !== 0 && index >= applications.length - modulo ? 1 / (numColumns + 5 / 100) : 1;
   };
+
+  const {getIcon} = useContext(ApplicationContext);
+  const {serverState} = useContext(ServerContext);
 
   return (
     <>
@@ -54,17 +57,20 @@ export const ApplicationList = ({
           horizontal={false}
           numColumns={numColumns}
           onRefresh={onRefresh}
-          data={applications}
+          data={applications.map((application) => ({
+            application,
+            server: serverState.currentServer,
+          }))}
           style={{
             flex: 1,
           }}
-          renderItem={(itemInfo: ListRenderItemInfo<ApplicationListEntry>) => (
+          renderItem={(itemInfo: ListRenderItemInfo<{application: ApplicationListEntry; server: Server | null}>) => (
             <ApplicationCard
               onPress={() => {
-                onExecute(itemInfo.item);
+                onExecute(itemInfo.item.application);
               }}
               onLongPress={() => {
-                onDetails(itemInfo.item);
+                onDetails(itemInfo.item.application);
               }}
               style={{
                 alignItems: 'center',
@@ -73,12 +79,12 @@ export const ApplicationList = ({
                 margin: marginColumn,
                 height: Dimensions.get('window').width / numColumns,
               }}
-              name={itemInfo.item.name}
-              icon={ApplicationService.getIcon(itemInfo.item.id)}
-              loading={itemInfo.item.executing}
+              name={itemInfo.item.application.name}
+              icon={getIcon(itemInfo.item.application.id, itemInfo.item.server?.url)}
+              loading={itemInfo.item.application.executing}
             />
           )}
-          keyExtractor={(item, index) => item.id || String(index)}
+          keyExtractor={(item, index) => `${item.application.id}@${serverState.currentServer?.id}` || String(index)}
         />
       </View>
     </>

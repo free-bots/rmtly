@@ -1,11 +1,12 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {DrawerContent} from '../../components/drawer/DrawerContent';
-import {Applications} from './Applications';
+import {ApplicationsScreen} from './ApplicationsScreen';
 import {CategoryNavigator} from './categories/CategoryNavigator';
 import {SettingsNavigator} from '../settings/SettingsNavigator';
 import {ThemeContext} from '../../../contexts/ThemeContext';
 import {NavigationHeaderContext} from '../../../contexts/NavigationHeaderContext';
+import {ServerContext} from '../../../contexts/ServerContext';
 
 const Drawer = createDrawerNavigator();
 
@@ -13,17 +14,26 @@ export const DrawerNavigator = () => {
   const {dark, light, isLightTheme} = useContext(ThemeContext);
   const theme = isLightTheme ? light : dark;
   const {headerVisible} = useContext(NavigationHeaderContext);
+  const {serverState} = useContext(ServerContext);
   return (
     <Drawer.Navigator
-      drawerContent={DrawerContent}
+      drawerContent={(props) => <DrawerContent {...{...props, name: serverState.currentServer}} />}
       initialRouteName="Home"
       screenOptions={{
         headerTintColor: theme.colors.text,
         headerShown: headerVisible,
       }}
       detachInactiveScreens={true}>
-      <Drawer.Screen name="Applications" component={Applications} />
-      <Drawer.Screen name="Categories" component={CategoryNavigator} />
+      <Drawer.Screen
+        options={{headerTitle: `Applications @ ${serverState.currentServer?.url}`}}
+        name="Applications"
+        component={ApplicationsScreen}
+      />
+      <Drawer.Screen
+        options={{headerTitle: `Categories @ ${serverState.currentServer?.url}`}}
+        name="Categories"
+        component={CategoryNavigator}
+      />
       <Drawer.Screen name="Settings" component={SettingsNavigator} />
     </Drawer.Navigator>
   );

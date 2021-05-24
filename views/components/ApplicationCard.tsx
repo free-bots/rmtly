@@ -3,6 +3,7 @@ import {ActivityIndicator, StyleProp, View, ViewStyle} from 'react-native';
 import {FallbackImage} from './FallbackImage';
 import {Text, TouchableRipple} from 'react-native-paper';
 import {ThemeContext} from '../../contexts/ThemeContext';
+import {ServerContext} from '../../contexts/ServerContext';
 
 export const ApplicationCard = ({
   onPress,
@@ -25,6 +26,9 @@ export const ApplicationCard = ({
   const maxSize = (style as any)?.height || 50;
   const iconMaxSize = maxSize * 0.5;
 
+  const {serverState} = useContext(ServerContext);
+  const token = serverState.currentServer?.authentication.token;
+
   return (
     <TouchableRipple
       borderless={true}
@@ -41,6 +45,7 @@ export const ApplicationCard = ({
       <View>
         <FallbackImage
           url={icon}
+          token={token}
           style={{
             height: iconMaxSize,
             width: iconMaxSize,

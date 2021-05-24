@@ -9,7 +9,7 @@ export const Settings = ({navigation}: any) => {
   const {dark, light, isLightTheme} = useContext(ThemeContext);
   const theme = isLightTheme ? light : dark;
 
-  const {servers} = useContext(ServerContext);
+  const {serverState} = useContext(ServerContext);
 
   const navigateToServerList = () => {
     navigation.navigate('ServerList');
@@ -20,7 +20,7 @@ export const Settings = ({navigation}: any) => {
       <BaseScreen>
         <View>
           <List.Item
-            title={`Connected Servers: ${servers.length}`}
+            title={`Connected Servers: ${serverState.servers.length}`}
             description={'Click to manage a singe server'}
             left={(props) => (
               <List.Icon

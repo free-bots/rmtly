@@ -1,19 +1,17 @@
 import {Alert, Image, View} from 'react-native';
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import {useSignUp} from './hooks/SignUpHook';
-import {LoginContext} from '../../../../contexts/LoginContext';
 import Button from '../../../components/buttons/Button';
 import {BaseScreen} from '../../base/BaseScreen';
+import {useConnectWithServer} from './hooks/ConnectWithServerHook';
 
-export const ServerAuthenticationQr = () => {
+export const ServerAuthenticationQr = ({route, navigation}: any) => {
   let qr: QRCodeScanner | null;
 
   const [camera, setCamera] = useState<'back' | 'front'>('back');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [loading, code, setCode, signUp] = useSignUp();
+  const [loading, code, setCode, addServer] = useConnectWithServer();
+  const {url} = route.params;
 
-  const {loggedIn} = useContext(LoginContext);
 
   const toggleCamera = () => {
     setCamera(camera === 'back' ? 'front' : 'back');
@@ -27,9 +25,12 @@ export const ServerAuthenticationQr = () => {
         {
           text: 'Yes',
           onPress: () => {
-            signUp(data)
-              .then(() => {
-                loggedIn();
+            addServer(url, data)
+              .then((serverSize) => {
+                if (serverSize > 1) {
+                  navigation.navigate('ServerList');
+                }
+                console.log('success');
               })
               .catch(() => {
                 qrRef.reactivate();

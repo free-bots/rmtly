@@ -2,31 +2,34 @@ import React, {Component, useContext} from 'react';
 import {View} from 'react-native';
 import {ApplicationEntry} from '../../models/ApplicationEntry';
 import {FallbackImage} from './FallbackImage';
-import ApplicationService from '../../services/Application.service';
 import ActionSheet from 'react-native-actions-sheet';
 import Button from './buttons/Button';
 import {ThemeContext, ThemeState} from '../../contexts/ThemeContext';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {Text} from 'react-native-paper';
+import {ServerContext} from '../../contexts/ServerContext';
+import {Server} from '../../models/persistence/Server';
+import {ApplicationContext} from '../../services/ApplicationContext';
+import {ExecuteRequest} from '../../models/Request.model';
+import {ExecuteResponse} from '../../models/Response.model';
 
-const delays: {label: string; value: number}[] = [0, 3, 5, 10, 30, 60].map(
-  (time) => ({
-    label: `${time} Sec`,
-    value: time * 1000,
-  }),
-);
+const delays: {label: string; value: number}[] = [0, 3, 5, 10, 30, 60].map((time) => ({
+  label: `${time} Sec`,
+  value: time * 1000,
+}));
 
-export interface ApplicationBottomSheetProps extends ThemeState {}
+export interface ApplicationBottomSheetProps extends ThemeState {
+  currentServer: Server | null;
+  executeApplication: (applicationId: string, request: ExecuteRequest) => Promise<ExecuteResponse>;
+  getIcon: (applicationId: string) => string;
+}
 
 export interface ApplicationBottomSheetState {
   application: ApplicationEntry | null;
   executeDelay: number;
 }
 
-class ApplicationBottomSheet extends Component<
-  ApplicationBottomSheetProps,
-  ApplicationBottomSheetState
-> {
+class ApplicationBottomSheet extends Component<ApplicationBottomSheetProps, ApplicationBottomSheetState> {
   actionSheetRef: any = React.createRef<ActionSheet>();
 
   constructor(props: ApplicationBottomSheetProps) {
@@ -52,9 +55,10 @@ class ApplicationBottomSheet extends Component<
     if (!application) {
       return;
     }
-    ApplicationService.executeApplication(application?.id, {
-      executeDelay: executeDelay,
-    })
+    this.props
+      .executeApplication(application?.id, {
+        executeDelay: executeDelay,
+      })
       .then(() => {})
       .catch((error) => console.error(error));
   };
@@ -83,7 +87,7 @@ class ApplicationBottomSheet extends Component<
             <>
               <View>
                 <FallbackImage
-                  url={ApplicationService.getIcon(application.id)}
+                  url={this.props.getIcon(application.id)}
                   style={{height: 100, width: 100, alignSelf: 'center'}}
                 />
                 <Text
@@ -142,14 +146,16 @@ class ApplicationBottomSheet extends Component<
   }
 }
 
-const applyTheme = (ComponentToWrap: any) => {
+const applyContext = (ComponentToWrap: any) => {
   const Wrapped = (props: any) => {
+    const {executeApplication, getIcon} = useContext(ApplicationContext);
+    const {serverState} = useContext(ServerContext);
     const {dark, light, isLightTheme} = useContext(ThemeContext);
     const {forwardedRef} = props;
     return (
       <ComponentToWrap
         {...props}
-        {...{dark, light, isLightTheme}}
+        {...{dark, light, isLightTheme, currentServer: serverState.currentServer, executeApplication, getIcon}}
         ref={forwardedRef}
       />
     );
@@ -160,4 +166,4 @@ const applyTheme = (ComponentToWrap: any) => {
   });
 };
 
-export default applyTheme(ApplicationBottomSheet);
+export default applyContext(ApplicationBottomSheet);

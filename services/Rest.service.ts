@@ -1,5 +1,3 @@
-import {ConfigService} from './Config.service';
-
 export interface RestInterceptor {
   code: number;
   callback: () => void;
@@ -10,9 +8,9 @@ class _RestService {
 
   private interceptors: RestInterceptor[] = [];
 
-  public get<T>(url: string, json: boolean = true): Promise<T> {
+  public get<T>(url: string, json: boolean = true, token?: string): Promise<T> {
     return fetch(url, {
-      headers: this.headersConfig(),
+      headers: this.headersConfig(token),
     }).then((response) => {
       this.handleInterceptors(response.status);
       if (response.ok && json) {
@@ -22,13 +20,13 @@ class _RestService {
     });
   }
 
-  public post<T>(url: string, body?: any): Promise<T> {
+  public post<T>(url: string, body?: any, token?: string): Promise<T> {
     return fetch(url, {
       method: 'POST',
       ...(body
         ? {
             body: JSON.stringify(body),
-            headers: this.headersConfig(),
+            headers: this.headersConfig(token),
           }
         : {}),
     }).then((response) => {
@@ -37,8 +35,7 @@ class _RestService {
     });
   }
 
-  public headersConfig(headers?: Headers): Headers {
-    const token = ConfigService.getToken();
+  public headersConfig(token?: string, headers?: Headers): Headers {
     const defaultHeaders = new Headers(headers);
     defaultHeaders.set('Content-type', 'application/json; charset=UTF-8');
     if (token) {

@@ -2,7 +2,7 @@ import React, {useContext, useState} from 'react';
 import {BaseScreen} from '../base/BaseScreen';
 import {FlatList, ListRenderItemInfo, View} from 'react-native';
 import {Empty} from '../../components/Empty';
-import {FAB, List} from 'react-native-paper';
+import {Chip, FAB, List} from 'react-native-paper';
 import {Server} from '../../../models/persistence/Server';
 import {LoginContext} from '../../../contexts/LoginContext';
 import {ThemeContext} from '../../../contexts/ThemeContext';
@@ -15,7 +15,7 @@ export const ServerList = ({navigation}: any) => {
   const {dark, light, isLightTheme} = useContext(ThemeContext);
   const theme = isLightTheme ? light : dark;
 
-  const {servers} = useContext(ServerContext);
+  const {serverState} = useContext(ServerContext);
 
   const scrollDirectionHandler = (direction: ScrollDirection) => {
     setFabVisible(direction === ScrollDirection.UP);
@@ -31,7 +31,7 @@ export const ServerList = ({navigation}: any) => {
   };
 
   const navigateToAddNewServer = () => {
-    navigation.navigate('LoginNavigator', {screen: 'ServerConnection'});
+    navigation.navigate('ServerConnection');
   };
 
   const [fabVisible, setFabVisible] = useState<boolean>(true);
@@ -48,7 +48,7 @@ export const ServerList = ({navigation}: any) => {
             onScroll={(event) => {
               onScroll(event);
             }}
-            contentContainerStyle={servers?.length ? {} : {flex: 1}}
+            contentContainerStyle={serverState.servers?.length ? {} : {flex: 1}}
             ListEmptyComponent={() => (
               <View
                 style={{
@@ -63,7 +63,7 @@ export const ServerList = ({navigation}: any) => {
             onRefresh={() => {
               // onRefresh();
             }}
-            data={servers}
+            data={serverState.servers}
             renderItem={(info: ListRenderItemInfo<Server>) => (
               <View>
                 <List.Item
@@ -79,15 +79,28 @@ export const ServerList = ({navigation}: any) => {
                       }}
                     />
                   )}
+                  right={() =>
+                    info.item.id === serverState.currentServer?.id ? (
+                      <Chip
+                        icon="information"
+                        style={{
+                          height: '60%',
+                          alignSelf: 'center',
+                        }}>
+                        Current
+                      </Chip>
+                    ) : null
+                  }
                   onPress={() => {
                     navigateToServer(info.item);
                   }}
                 />
               </View>
             )}
-            keyExtractor={(item, index) => item?.url || String(index)}
+            keyExtractor={(item, index) => item?.id || String(index)}
           />
           <FAB
+            theme={{...theme, colors: {accent: theme.colors.primary}}}
             visible={fabVisible}
             label={'add server'}
             style={{

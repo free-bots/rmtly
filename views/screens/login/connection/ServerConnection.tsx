@@ -1,32 +1,30 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {View} from 'react-native';
-import {ConfigService} from '../../../../services/Config.service';
 import ConnectionService from '../../../../services/Connection.service';
 import AuthenticationService from '../../../../services/Authentication.Service';
 import Button from '../../../components/buttons/Button';
 import TextInput from '../../../components/TextInputs/TextInput';
 import {BaseScreen} from '../../base/BaseScreen';
+import {ServerContext} from '../../../../contexts/ServerContext';
+import {Snackbar} from 'react-native-paper';
+import {Server} from '../../../../models/persistence/Server';
 
 export const ServerConnection = ({navigation}: any) => {
   const [url, setUrl] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [duplicateServer, setDuplicateServer] = useState<Server | null>(null);
 
-  useEffect(() => {
-    const configUrl = ConfigService.getUrl();
-    if (configUrl) {
-      setUrl(configUrl);
-    }
-  }, []);
+  const {serverState} = useContext(ServerContext);
 
   const testConnectionAndNavigate = async () => {
     setLoading(true);
     try {
       const available = await ConnectionService.isRmtlyServerAvailable(url || '');
-      if (!available) {
+      if (!available || !url) {
         throw new Error();
       }
 
-      await AuthenticationService.createCode();
+      await AuthenticationService.createCode(url);
 
       navigateToAuthentication();
     } catch (error) {
@@ -55,10 +53,14 @@ export const ServerConnection = ({navigation}: any) => {
             placeholder={'URL'}
             onChangeText={(text: string) => {
               setUrl(text);
+
+              const server = serverState.servers.find((server) => server.url === text) || null;
+              setDuplicateServer(server);
             }}
             value={url}
           />
           <Button
+            disabled={duplicateServer}
             loading={loading}
             onPress={() => {
               testConnectionAndNavigate();
@@ -67,6 +69,24 @@ export const ServerConnection = ({navigation}: any) => {
           </Button>
         </View>
       </BaseScreen>
+      <Snackbar
+        visible={duplicateServer !== null}
+        duration={5000}
+        action={
+          duplicateServer
+            ? {
+                label: 'Manage',
+                onPress: () => {
+                  navigation.navigate('ConnectionInfo', {
+                    server: duplicateServer,
+                  });
+                },
+              }
+            : undefined
+        }
+        onDismiss={() => {}}>
+        Server connection exists :(
+      </Snackbar>
     </>
   );
 };

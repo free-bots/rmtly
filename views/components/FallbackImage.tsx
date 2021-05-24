@@ -1,15 +1,8 @@
 import React, {useContext, useState} from 'react';
 import {Image, ImageStyle, StyleProp} from 'react-native';
-import {RestService} from '../../services/Rest.service';
 import {ThemeContext} from '../../contexts/ThemeContext';
 
-export const FallbackImage = ({
-  url,
-  style,
-}: {
-  url: string;
-  style?: StyleProp<ImageStyle>;
-}) => {
+export const FallbackImage = ({url, style, token}: {url: string; style?: StyleProp<ImageStyle>; token?: string}) => {
   const [imageSource, setImageSource] = useState<{uri: any}>({uri: url});
   const [error, setError] = useState<boolean>(false);
   const {dark, light, isLightTheme} = useContext(ThemeContext);
@@ -21,10 +14,11 @@ export const FallbackImage = ({
         error
           ? imageSource
           : {
-              headers: {
-                Authorization:
-                  RestService.headersConfig().get('Authorization') || '',
-              },
+              headers: token
+                ? {
+                    Authorization: `Bearer ${token}`,
+                  }
+                : {},
               ...imageSource,
             }
       }

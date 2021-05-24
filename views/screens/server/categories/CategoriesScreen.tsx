@@ -1,55 +1,56 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {FlatList, ListRenderItemInfo, View} from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
-import ApplicationService from '../../../../services/Application.service';
-import {
-  SortedApplicationResponse,
-  SortedValue,
-  SortKey,
-} from '../../../../models/Response.model';
+import React, {useCallback, useContext, useState} from 'react';
+import {SortedApplicationResponse, SortedValue, SortKey} from '../../../../models/Response.model';
 import {List} from 'react-native-paper';
 import {BaseScreen} from '../../base/BaseScreen';
 import {ThemeContext} from '../../../../contexts/ThemeContext';
 import {LoginContext} from '../../../../contexts/LoginContext';
 import {Empty} from '../../../components/Empty';
+import {ApplicationContext} from '../../../../services/ApplicationContext';
+import {useFocusEffect} from '@react-navigation/native';
+import {ServerContext} from '../../../../contexts/ServerContext';
 
-export const Categories = ({navigation}: any) => {
-  const [sortedApplications, setSortedApplications] = useState<
-    SortedApplicationResponse
-  >();
+export const CategoriesScreen = ({navigation}: any) => {
+  const [sortedApplications, setSortedApplications] = useState<SortedApplicationResponse>();
 
   const [loading, setLoading] = useState(false);
   const {isAuthenticated} = useContext(LoginContext);
   const {dark, light, isLightTheme} = useContext(ThemeContext);
   const theme = isLightTheme ? light : dark;
 
-  useEffect(() => {
-    let interval: any = null;
+  const {sortApplicationBy} = useContext(ApplicationContext);
+  const {serverState} = useContext(ServerContext);
 
-    if (isAuthenticated) {
-      fetchApplicationsSortedByCategory();
+  useFocusEffect(
+    useCallback(() => {
+      let interval: any = null;
 
-      interval = setInterval(() => {
-        fetchApplicationsSortedByCategory();
-      }, 10000);
-    }
+      if (isAuthenticated) {
+        fetchApplicationsSortedByCategory(serverState.currentServer?.id as any);
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, [isAuthenticated]);
+        interval = setInterval(fetchApplicationsSortedByCategory, 10000, serverState.currentServer?.id);
+      }
+
+      return () => {
+        clearInterval(interval);
+      };
+    }, [isAuthenticated, sortApplicationBy, serverState]),
+  );
 
   const onRefresh = () => {
-    fetchApplicationsSortedByCategory();
+    fetchApplicationsSortedByCategory(serverState.currentServer?.id as any);
   };
 
-  const fetchApplicationsSortedByCategory = () => {
+  const fetchApplicationsSortedByCategory = (serverId: string) => {
     setLoading(true);
-    ApplicationService.sortApplicationBy(SortKey.CATEGORY)
+    sortApplicationBy(SortKey.CATEGORY)
       .then((fetchedApplications) => {
-        fetchedApplications.values.sort((a, b) =>
-          a.sortedValue.localeCompare(b.sortedValue),
-        );
+        if (serverState.currentServer?.id !== serverId) {
+          setLoading(false);
+          return;
+        }
+        fetchedApplications.values.sort((a, b) => a.sortedValue.localeCompare(b.sortedValue));
         if (isAuthenticated) {
           setLoading(false);
           setSortedApplications(fetchedApplications);
@@ -73,10 +74,6 @@ export const Categories = ({navigation}: any) => {
     });
   };
 
-  useEffect(() => {
-    fetchApplicationsSortedByCategory();
-  }, []);
-
   return (
     <>
       <BaseScreen>
@@ -85,9 +82,7 @@ export const Categories = ({navigation}: any) => {
             flex: 1,
           }}>
           <FlatList
-            contentContainerStyle={
-              sortedApplications?.values?.length ? {} : {flex: 1}
-            }
+            contentContainerStyle={sortedApplications?.values?.length ? {} : {flex: 1}}
             ListEmptyComponent={() => (
               <View
                 style={{

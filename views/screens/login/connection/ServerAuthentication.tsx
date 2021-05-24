@@ -1,16 +1,13 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {View} from 'react-native';
-import {useSignUp} from './hooks/SignUpHook';
-import {LoginContext} from '../../../../contexts/LoginContext';
 import Button from '../../../components/buttons/Button';
 import {BaseScreen} from '../../base/BaseScreen';
 import TextInput from '../../../components/TextInputs/TextInput';
 import {Text} from 'react-native-paper';
+import {useConnectWithServer} from './hooks/ConnectWithServerHook';
 
 export const ServerAuthentication = ({route, navigation}: any) => {
-  const [loading, code, setCode, signUp] = useSignUp();
-
-  const {loggedIn} = useContext(LoginContext);
+  const [loading, code, setCode, addServer] = useConnectWithServer();
 
   const {url} = route.params;
 
@@ -54,10 +51,12 @@ export const ServerAuthentication = ({route, navigation}: any) => {
           <Button
             loading={loading}
             onPress={() => {
-              signUp()
-                .then(() => {
+              addServer(url)
+                .then((serverSize) => {
+                  if (serverSize > 1) {
+                    navigation.navigate('ServerList');
+                  }
                   console.log('success');
-                  loggedIn();
                 })
                 .catch(() => {
                   // state is cleared

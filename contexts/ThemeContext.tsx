@@ -1,13 +1,7 @@
 import React, {createContext, useEffect, useState} from 'react';
 
-import {
-  DarkTheme as NavigationDarkTheme,
-  DefaultTheme as NavigationDefaultTheme,
-} from '@react-navigation/native';
-import {
-  DarkTheme as PaperDarkTheme,
-  DefaultTheme as PaperDefaultTheme,
-} from 'react-native-paper';
+import {DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme} from '@react-navigation/native';
+import {DarkTheme as PaperDarkTheme, DefaultTheme as PaperDefaultTheme} from 'react-native-paper';
 import {useColorScheme} from 'react-native';
 
 export interface ThemeState {
@@ -30,6 +24,8 @@ const CombinedDefaultTheme = {
   colors: {
     ...PaperDefaultTheme.colors,
     ...NavigationDefaultTheme.colors,
+    primary: '#007AFFFF',
+    accent: '#0982ff',
   },
 };
 const CombinedDarkTheme = {
@@ -61,9 +57,5 @@ export const ThemeContextProvider = (props: any) => {
     setTheme({...theme, isLightTheme: scheme !== 'dark'});
   }, [scheme]);
 
-  return (
-    <ThemeContext.Provider value={theme}>
-      {props.children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={theme}>{props.children}</ThemeContext.Provider>;
 };

@@ -6,6 +6,7 @@ import {ApplicationsContextProvider} from './ApplicationsContext';
 import {NavigationHeaderContextProvider} from './NavigationHeaderContext';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {ConnectivityContextProvider} from './ConnectivityContext';
+import {ApplicationContextProvider} from '../services/ApplicationContext';
 
 export const UiProvider = (props: any) => {
   const {dark, light, isLightTheme} = useContext(ThemeContext);
@@ -23,11 +24,13 @@ export const RootContextProvider = (props: any) => {
       <UiProvider>
         <ConnectivityContextProvider>
           <ServerContextProvider>
-            <LoginContextProvider>
-              <ApplicationsContextProvider>
-                <NavigationHeaderContextProvider>{props.children}</NavigationHeaderContextProvider>
-              </ApplicationsContextProvider>
-            </LoginContextProvider>
+            <ApplicationContextProvider>
+              <LoginContextProvider>
+                <ApplicationsContextProvider>
+                  <NavigationHeaderContextProvider>{props.children}</NavigationHeaderContextProvider>
+                </ApplicationsContextProvider>
+              </LoginContextProvider>
+            </ApplicationContextProvider>
           </ServerContextProvider>
         </ConnectivityContextProvider>
       </UiProvider>
