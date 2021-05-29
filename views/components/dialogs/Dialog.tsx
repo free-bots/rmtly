@@ -3,13 +3,14 @@ import {Dialog as _Dialog, Portal} from 'react-native-paper';
 import Button from '../buttons/Button';
 
 export interface DialogProps {
-  title: string;
-  content: ReactElement;
+  title: string | ((data?: any) => string);
+  content: ReactElement | ((data?: any) => ReactElement);
   actions: DialogActionProps[];
 }
 
 export interface DialogState {
   visible: boolean;
+  data?: any;
 }
 
 export class Dialog extends Component<DialogProps, DialogState> {
@@ -17,10 +18,11 @@ export class Dialog extends Component<DialogProps, DialogState> {
     super(props);
     this.state = {
       visible: false,
+      data: null,
     };
   }
 
-  public showDialog = () => this.setState({visible: true});
+  public showDialog = (data: any) => this.setState({visible: true, data});
 
   public hideDialog = () => this.setState({visible: false});
 
@@ -29,8 +31,12 @@ export class Dialog extends Component<DialogProps, DialogState> {
       <>
         <Portal>
           <_Dialog visible={this.state.visible} onDismiss={this.hideDialog}>
-            <_Dialog.Title>{this.props.title}</_Dialog.Title>
-            <_Dialog.Content>{this.props.content}</_Dialog.Content>
+            <_Dialog.Title>
+              {typeof this.props.title === 'function' ? this.props.title(this.state.data) : this.props.title}
+            </_Dialog.Title>
+            <_Dialog.Content>
+              {typeof this.props.content === 'function' ? this.props.content(this.state.data) : this.props.content}
+            </_Dialog.Content>
             <_Dialog.Actions>
               {this.props.actions.map((action, index) => (
                 <DialogAction
@@ -38,7 +44,7 @@ export class Dialog extends Component<DialogProps, DialogState> {
                   title={action.title}
                   onPress={() => {
                     this.hideDialog();
-                    action.onPress();
+                    action.onPress(this.state.data);
                   }}
                 />
               ))}
@@ -52,7 +58,7 @@ export class Dialog extends Component<DialogProps, DialogState> {
 
 export interface DialogActionProps {
   title: string;
-  onPress: (() => void) | (() => Promise<void>);
+  onPress: ((data?: any) => void) | ((data?: any) => Promise<void>);
 }
 
 export const DialogAction = (props: DialogActionProps) => {
