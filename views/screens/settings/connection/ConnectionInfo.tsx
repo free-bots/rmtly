@@ -1,11 +1,12 @@
-import React, {useContext} from 'react';
+import React, {createRef, useContext} from 'react';
 import {BaseScreen} from '../../base/BaseScreen';
 import {View} from 'react-native';
-import {Card, Text} from 'react-native-paper';
+import {Card, Paragraph, Text} from 'react-native-paper';
 import Button from '../../../components/buttons/Button';
 import {ThemeContext} from '../../../../contexts/ThemeContext';
 import {ServerContext} from '../../../../contexts/ServerContext';
 import {Server} from '../../../../models/persistence/Server';
+import {Dialog} from '../../../components/dialogs/Dialog';
 
 export const ConnectionInfo = ({route, navigation}: any) => {
   const {dark, light, isLightTheme} = useContext(ThemeContext);
@@ -14,6 +15,8 @@ export const ConnectionInfo = ({route, navigation}: any) => {
   const {deleteById, setCurrentServer, serverState} = useContext(ServerContext);
 
   const server: Server = route.params?.server;
+
+  const dialogRef: any = createRef<typeof Dialog>();
 
   return (
     <>
@@ -54,14 +57,31 @@ export const ConnectionInfo = ({route, navigation}: any) => {
 
           <Button
             onPress={() => {
-              deleteById(server.id).then(() => {
-                if (serverState.servers?.length > 0) {
-                  navigation.goBack();
-                }
-              });
+              dialogRef.current?.showDialog();
             }}>
             Logout
           </Button>
+          <Dialog
+            ref={dialogRef}
+            title={'hi'}
+            content={<Paragraph>Do you want to delete the server connection?</Paragraph>}
+            actions={[
+              {
+                onPress: () => {},
+                title: 'No',
+              },
+              {
+                onPress: () => {
+                  deleteById(server.id).then(() => {
+                    if (serverState.servers?.length > 0) {
+                      navigation.goBack();
+                    }
+                  });
+                },
+                title: 'Yes',
+              },
+            ]}
+          />
         </View>
       </BaseScreen>
     </>
