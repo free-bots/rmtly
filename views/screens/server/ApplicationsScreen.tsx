@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {createRef, useCallback, useContext, useEffect, useState} from 'react';
+import React, {createRef, useCallback, useContext, useState} from 'react';
 import {ApplicationList, ApplicationListEntry} from '../../components/ApplicationList';
 import {ApplicationEntry} from '../../../models/ApplicationEntry';
 import ApplicationBottomSheet from '../../components/ApplicationBottomSheet';
@@ -11,6 +11,9 @@ import {ApplicationContext} from '../../../services/ApplicationContext';
 import {ServerContext} from '../../../contexts/ServerContext';
 import {useFocusEffect} from '@react-navigation/native';
 import {ConnectivityContext} from '../../../contexts/ConnectivityContext';
+import ServerInformationService from '../../../services/ServerInformation.service';
+import {Server} from '../../../models/persistence/Server';
+import {usePrevious} from '../../../hooks/PreviousHook';
 
 export const ApplicationsScreen = ({route}: any) => {
   const category = route.params?.category as {
@@ -26,8 +29,9 @@ export const ApplicationsScreen = ({route}: any) => {
 
   const {getAllApplications, executeApplication} = useContext(ApplicationContext);
 
-  const {serverState} = useContext(ServerContext);
+  const {serverState, update} = useContext(ServerContext);
   const {offline} = useContext(ConnectivityContext);
+  const previousCurrentServer = usePrevious(serverState.currentServer) as Server;
 
   useFocusEffect(
     useCallback(() => {
@@ -53,9 +57,33 @@ export const ApplicationsScreen = ({route}: any) => {
     }, [isAuthenticated, serverState.currentServer, getAllApplications]),
   );
 
-  useEffect(() => {
-    console.log(applications.length);
-  }, [applications]);
+  useFocusEffect(
+    useCallback(() => {
+      if (offline || !isAuthenticated || !serverState.currentServer) {
+        return;
+      }
+
+      let updateConfigInterval: any = null;
+      if (previousCurrentServer?.id !== serverState.currentServer?.id) {
+        setInterval(
+          () => {
+            if (offline || !serverState.currentServer) {
+              return;
+            }
+            updateServerInfo(serverState.currentServer).then(() => {
+              console.log('update server config');
+            });
+          },
+          30000,
+          serverState.currentServer,
+        );
+      }
+
+      return () => {
+        clearInterval(updateConfigInterval);
+      };
+    }, [offline, isAuthenticated, serverState.currentServer, previousCurrentServer]),
+  );
 
   const equalsOrInclude = (a: string, b: string): boolean => {
     if (!a || !b) {
@@ -151,6 +179,17 @@ export const ApplicationsScreen = ({route}: any) => {
     }
 
     fetchApplications(serverState.currentServer?.id as any);
+  };
+
+  const updateServerInfo = async (server: Server) => {
+    // todo update intervals etc.
+    const serverInformation = await ServerInformationService.getInformation(server.url);
+    await update({
+      ...server,
+      configuration: {
+        updateInterval: 1000,
+      },
+    });
   };
 
   return (

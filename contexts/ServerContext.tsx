@@ -58,9 +58,17 @@ export const ServerContextProvider = (props: any) => {
   };
 
   const update = async (server: Server): Promise<void> => {
-    const newServerList = [...serverState.servers.filter((currentServer) => currentServer.id === server.id), server];
+    if (!serverState.servers.find((currentServer) => currentServer.id === server.id)) {
+      // dont add a new server
+      return;
+    }
+    const newServerList = [...serverState.servers.filter((currentServer) => currentServer.id !== server.id), server];
     await AsyncStorage.setItem(SERVER_KEY, toJson(newServerList));
-    setServerState((prevState) => ({...prevState, servers: newServerList}));
+    setServerState((prevState) => ({
+      ...prevState,
+      servers: newServerList,
+      currentServer: getCurrentServer(server.id, newServerList),
+    }));
   };
 
   const deleteById = async (id: string): Promise<string> => {
