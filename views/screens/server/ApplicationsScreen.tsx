@@ -10,6 +10,7 @@ import {LoginContext} from '../../../contexts/LoginContext';
 import {ApplicationContext} from '../../../services/ApplicationContext';
 import {ServerContext} from '../../../contexts/ServerContext';
 import {useFocusEffect} from '@react-navigation/native';
+import {ConnectivityContext} from '../../../contexts/ConnectivityContext';
 
 export const ApplicationsScreen = ({route}: any) => {
   const category = route.params?.category as {
@@ -26,6 +27,7 @@ export const ApplicationsScreen = ({route}: any) => {
   const {getAllApplications, executeApplication} = useContext(ApplicationContext);
 
   const {serverState} = useContext(ServerContext);
+  const {offline} = useContext(ConnectivityContext);
 
   useFocusEffect(
     useCallback(() => {
@@ -79,6 +81,10 @@ export const ApplicationsScreen = ({route}: any) => {
   };
 
   const fetchApplications = (serverId: string) => {
+    if (offline) {
+      return;
+    }
+
     setLoading(true);
     getAllApplications()
       .then((fetchedApplications) => {

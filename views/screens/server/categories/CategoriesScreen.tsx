@@ -10,6 +10,7 @@ import {Empty} from '../../../components/Empty';
 import {ApplicationContext} from '../../../../services/ApplicationContext';
 import {useFocusEffect} from '@react-navigation/native';
 import {ServerContext} from '../../../../contexts/ServerContext';
+import {ConnectivityContext} from '../../../../contexts/ConnectivityContext';
 
 export const CategoriesScreen = ({navigation}: any) => {
   const [sortedApplications, setSortedApplications] = useState<SortedApplicationResponse>();
@@ -21,6 +22,7 @@ export const CategoriesScreen = ({navigation}: any) => {
 
   const {sortApplicationBy} = useContext(ApplicationContext);
   const {serverState} = useContext(ServerContext);
+  const {offline} = useContext(ConnectivityContext);
 
   useFocusEffect(
     useCallback(() => {
@@ -43,6 +45,10 @@ export const CategoriesScreen = ({navigation}: any) => {
   };
 
   const fetchApplicationsSortedByCategory = (serverId: string) => {
+    if (offline) {
+      return;
+    }
+
     setLoading(true);
     sortApplicationBy(SortKey.CATEGORY)
       .then((fetchedApplications) => {

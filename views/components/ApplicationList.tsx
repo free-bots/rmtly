@@ -6,6 +6,7 @@ import {Empty} from './Empty';
 import {ApplicationContext} from '../../services/ApplicationContext';
 import {ServerContext} from '../../contexts/ServerContext';
 import {Server} from '../../models/persistence/Server';
+import {ThemeContext} from '../../contexts/ThemeContext';
 
 export interface ApplicationListEntry extends ApplicationEntry {
   executing: boolean;
@@ -35,11 +36,15 @@ export const ApplicationList = ({
   const {getIcon} = useContext(ApplicationContext);
   const {serverState} = useContext(ServerContext);
 
+  const {dark, light, isLightTheme} = useContext(ThemeContext);
+  const theme = isLightTheme ? light : dark;
+
   return (
     <>
       <View
         style={{
           flex: 1,
+          backgroundColor: theme.colors.background,
         }}>
         <FlatList
           contentContainerStyle={applications.length ? {} : {flex: 1}}
