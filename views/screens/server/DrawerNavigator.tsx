@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext} from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {DrawerContent} from '../../components/drawer/DrawerContent';
 import {ApplicationsScreen} from './ApplicationsScreen';
@@ -7,6 +7,7 @@ import {SettingsNavigator} from '../settings/SettingsNavigator';
 import {ThemeContext} from '../../../contexts/ThemeContext';
 import {NavigationHeaderContext} from '../../../contexts/NavigationHeaderContext';
 import {ServerContext} from '../../../contexts/ServerContext';
+import {ScriptsNavigator} from './scripts/ScriptsNavigator';
 
 const Drawer = createDrawerNavigator();
 
@@ -33,6 +34,11 @@ export const DrawerNavigator = () => {
         options={{headerTitle: `Categories @ ${serverState.currentServer?.url}`}}
         name="Categories"
         component={CategoryNavigator}
+      />
+      <Drawer.Screen
+        options={{headerTitle: `Scripts @ ${serverState.currentServer?.url}`}}
+        name="Scripts"
+        component={ScriptsNavigator}
       />
       <Drawer.Screen name="Settings" component={SettingsNavigator} />
     </Drawer.Navigator>

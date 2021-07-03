@@ -20,7 +20,7 @@ class _RestService {
     });
   }
 
-  public post<T>(url: string, body?: any, token?: string): Promise<T> {
+  public post<T>(url: string, body?: any, token?: string, json: boolean = true): Promise<T> {
     return fetch(url, {
       method: 'POST',
       ...(body
@@ -31,7 +31,10 @@ class _RestService {
         : {}),
     }).then((response) => {
       this.handleInterceptors(response.status);
-      return response.ok ? response.json() : null;
+      if (response.ok && json) {
+        return response.json();
+      }
+      return null;
     });
   }
 
