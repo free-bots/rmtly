@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {ActivityIndicator, FlatList, ListRenderItemInfo, View} from 'react-native';
-import React, {useCallback, useContext, useState} from 'react';
+import React, {createRef, useCallback, useContext, useState} from 'react';
 import {List} from 'react-native-paper';
 import {BaseScreen} from '../../base/BaseScreen';
 import {ThemeContext} from '../../../../contexts/ThemeContext';
@@ -11,6 +11,9 @@ import {ServerContext} from '../../../../contexts/ServerContext';
 import {ConnectivityContext} from '../../../../contexts/ConnectivityContext';
 import {ScriptContext} from '../../../../contexts/ScriptContext';
 import {ScriptEntry} from '../../../../models/ScriptEntry';
+import {ExecuteRequest} from '../../../../models/Request.model';
+import {AbstractBottomSheet} from '../../../components/bottomSheet/AbstractBottomSheet';
+import {ScriptBottomSheet} from '../../../components/bottomSheet/ScriptBottomSheet';
 
 interface LoadingScriptEntry {
   script: ScriptEntry;
@@ -28,6 +31,8 @@ export const ScriptsScreen = ({navigation}: any) => {
   const {serverState} = useContext(ServerContext);
   const {offline} = useContext(ConnectivityContext);
   const {getAllScripts, executeScript} = useContext(ScriptContext);
+
+  const scriptBottomSheetRef = createRef<AbstractBottomSheet>();
 
   useFocusEffect(
     useCallback(() => {
@@ -86,8 +91,11 @@ export const ScriptsScreen = ({navigation}: any) => {
       });
   };
 
-  const execute = (script: ScriptEntry) => {
-    // on long click -> bottomsheet
+  const execute = async (script: ScriptEntry, request: ExecuteRequest) => {
+    if (offline) {
+      return;
+    }
+
     setScripts((prevState) =>
       prevState?.map((currentScript) => {
         if (currentScript.script.name === script.name) {
@@ -97,9 +105,7 @@ export const ScriptsScreen = ({navigation}: any) => {
       }),
     );
 
-    executeScript(script.name, {
-      executeDelay: 0,
-    })
+    await executeScript(script.name, request)
       .then(() => {
         setScripts((prevState) =>
           prevState?.map((currentScript) => {
@@ -177,7 +183,10 @@ export const ScriptsScreen = ({navigation}: any) => {
                     ) : null
                   }
                   onPress={() => {
-                    execute(info.item.script);
+                    execute(info.item.script, {executeDelay: 0});
+                  }}
+                  onLongPress={() => {
+                    scriptBottomSheetRef.current?.open(info.item);
                   }}
                 />
               </View>
@@ -185,6 +194,11 @@ export const ScriptsScreen = ({navigation}: any) => {
             keyExtractor={(item, index) => item?.script?.name || String(index)}
           />
         </View>
+        <ScriptBottomSheet
+          ref={scriptBottomSheetRef}
+          data={null}
+          onExecute={(props, state) => execute(state.openData?.script, {executeDelay: state.executeDelay})}
+        />
       </BaseScreen>
     </>
   );
