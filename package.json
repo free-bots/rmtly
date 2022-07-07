@@ -10,28 +10,28 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.13.2",
-    "@react-native-community/masked-view": "^0.1.10",
-    "@react-native-community/netinfo": "^6.0.0",
-    "@react-native-community/progress-bar-android": "^1.0.3",
-    "@react-navigation/drawer": "^5.11.2",
-    "@react-navigation/native": "^5.8.9",
-    "@react-navigation/stack": "^5.12.8",
+    "@react-native-async-storage/async-storage": "^1.17.7",
+    "@react-native-community/masked-view": "^0.1.11",
+    "@react-native-community/netinfo": "^6.0.6",
+    "@react-native-community/progress-bar-android": "^1.0.4",
+    "@react-navigation/drawer": "^5.12.9",
+    "@react-navigation/native": "^5.8.10",
+    "@react-navigation/stack": "^5.14.9",
     "react": "16.13.1",
     "react-native": "0.63.2",
     "react-native-actions-sheet": "^0.3.5",
-    "react-native-camera": "^3.37.0",
+    "react-native-camera": "^4.2.1",
     "react-native-dropdown-picker": "^3.7.1",
-    "react-native-gesture-handler": "^1.8.0",
-    "react-native-modalize": "^2.0.5",
+    "react-native-gesture-handler": "^2.5.0",
+    "react-native-modalize": "^2.0.13",
     "react-native-paper": "^5.0.0-rc.2",
-    "react-native-permissions": "^2.1.5",
-    "react-native-qrcode-scanner": "^1.4.1",
-    "react-native-reanimated": "^1.13.2",
-    "react-native-safe-area-context": "^3.1.9",
-    "react-native-screens": "^2.14.0",
+    "react-native-permissions": "^2.2.2",
+    "react-native-qrcode-scanner": "^1.5.5",
+    "react-native-reanimated": "^1.13.4",
+    "react-native-safe-area-context": "^3.4.1",
+    "react-native-screens": "^2.18.1",
     "react-native-vector-icons": "^7.1.0",
-    "react-navigation-stack": "^2.8.2"
+    "react-navigation-stack": "^2.10.4"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
@@ -48,7 +48,7 @@
     "metro-react-native-babel-preset": "^0.59.0",
     "prettier": "^2.0.4",
     "react-test-renderer": "16.13.1",
-    "typescript": "^3.8.3"
+    "typescript": "^4.7.4"
   },
   "jest": {
     "preset": "react-native",
