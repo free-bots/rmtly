@@ -56,7 +56,7 @@ export const ServerList = ({navigation}: any) => {
                   justifyContent: 'center',
                   alignSelf: 'center',
                 }}>
-                <Empty />
+                <Empty/>
               </View>
             )}
             refreshing={loading}
@@ -100,7 +100,7 @@ export const ServerList = ({navigation}: any) => {
             keyExtractor={(item, index) => item?.id || String(index)}
           />
           <FAB
-            theme={{...theme, colors: {accent: theme.colors.primary}}}
+            theme={{...theme, colors: {...theme.colors, primaryContainer: theme.colors.primary}}}
             visible={fabVisible}
             label={'add server'}
             style={{

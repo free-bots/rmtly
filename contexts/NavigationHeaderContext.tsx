@@ -15,8 +15,7 @@ export const NavigationHeaderContextProvider = (props: any) => {
     setHeaderVisible(true);
   };
   return (
-    <NavigationHeaderContext.Provider
-      value={{disableHeader, enableHeader, headerVisible}}>
+    <NavigationHeaderContext.Provider value={{disableHeader, enableHeader, headerVisible}}>
       {props.children}
     </NavigationHeaderContext.Provider>
   );

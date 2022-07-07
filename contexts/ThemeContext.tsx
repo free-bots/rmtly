@@ -1,7 +1,7 @@
 import React, {createContext, useEffect, useState} from 'react';
 
 import {DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme} from '@react-navigation/native';
-import {DarkTheme as PaperDarkTheme, DefaultTheme as PaperDefaultTheme} from 'react-native-paper';
+import {MD3DarkTheme as PaperDarkTheme, MD3LightTheme as PaperDefaultTheme} from 'react-native-paper';
 import {useColorScheme} from 'react-native';
 
 export interface ThemeState {
@@ -36,6 +36,7 @@ const CombinedDarkTheme = {
     ...NavigationDarkTheme.colors,
     primary: '#6230ff',
     accent: '#6d15c2',
+    card: PaperDarkTheme.colors.surface,
   },
 };
 
