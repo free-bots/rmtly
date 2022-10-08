@@ -1,5 +1,8 @@
 import React, {createContext, useState} from 'react';
 
+/**
+ * @deprecated
+ */
 export const NavigationHeaderContext = createContext({
   disableHeader: () => {},
   enableHeader: () => {},

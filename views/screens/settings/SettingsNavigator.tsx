@@ -12,9 +12,9 @@ const Stack = createStackNavigator();
 export const SettingsNavigator = () => {
   const {headerVisible} = useContext(NavigationHeaderContext);
   return (
-    <Stack.Navigator initialRouteName="Settings" headerMode={headerVisible ? 'none' : 'screen'}>
+    <Stack.Navigator initialRouteName="Settings">
       <Stack.Screen name="ConnectionInfo" component={ConnectionInfo} />
-      <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="Settings" component={Settings} options={{headerShown: false}} />
       <Stack.Screen name="ServerList" component={ServerList} />
       <Stack.Screen name="ServerConnection" component={ServerConnection} />
       <Stack.Screen name="ServerAuthentication" component={ServerAuthentication} />

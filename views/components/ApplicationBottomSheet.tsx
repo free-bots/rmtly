@@ -29,6 +29,8 @@ export interface ApplicationBottomSheetState {
   executeDelay: number;
 }
 
+// todo bottomSheet not showing
+
 class ApplicationBottomSheet extends Component<ApplicationBottomSheetProps, ApplicationBottomSheetState> {
   actionSheetRef: any = React.createRef<ActionSheet>();
 

@@ -8,10 +8,8 @@ const Stack = createStackNavigator();
 export const CategoryNavigator = () => {
   const {headerVisible} = useContext(NavigationHeaderContext);
   return (
-    <Stack.Navigator
-      initialRouteName="Categories"
-      headerMode={headerVisible ? 'none' : 'screen'}>
-      <Stack.Screen name="Categories" component={CategoriesScreen} />
+    <Stack.Navigator initialRouteName="Categories">
+      <Stack.Screen name="Categories" component={CategoriesScreen} options={{headerShown: false}} />
       <Stack.Screen
         name="Category"
         component={ApplicationsScreen}

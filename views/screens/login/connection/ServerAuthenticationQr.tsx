@@ -1,6 +1,6 @@
 import {Image, View} from 'react-native';
 import React, {createRef, RefObject, useState} from 'react';
-import QRCodeScanner from 'react-native-qrcode-scanner';
+// import QRCodeScanner from 'react-native-qrcode-scanner'; // todo replace with https://github.com/mrousavy/react-native-vision-camera and https://github.com/rodgomesc/vision-camera-code-scanner
 import Button from '../../../components/buttons/Button';
 import {BaseScreen} from '../../base/BaseScreen';
 import {useConnectWithServer} from './hooks/ConnectWithServerHook';
@@ -15,7 +15,7 @@ export const ServerAuthenticationQr = ({route, navigation}: any) => {
 
   const dialogRef: any = createRef<typeof Dialog>();
 
-  const qrRef: RefObject<QRCodeScanner> = createRef();
+  // const qrRef: RefObject<QRCodeScanner> = createRef();
 
   const toggleCamera = () => {
     setCamera(camera === 'back' ? 'front' : 'back');
@@ -30,63 +30,63 @@ export const ServerAuthenticationQr = ({route, navigation}: any) => {
             flexDirection: 'column',
             justifyContent: 'space-between',
           }}>
-          <QRCodeScanner
-            ref={qrRef}
-            topViewStyle={{
-              flex: 1,
-            }}
-            cameraProps={{
-              autoFocus: 'on',
-              // barCodeTypes: ['qr'],
-            }}
-            cameraType={camera}
-            showMarker={true}
-            vibrate={true}
-            onRead={(e) => {
-              console.log(e);
-              dialogRef.current?.showDialog(e.data);
-            }}
-          />
-          <Button
-            icon={({size, color}: {size: number; color: string}) => (
-              <Image
-                source={require('../../../../assets/camera-flip.png')}
-                style={{width: size, height: size, tintColor: color}}
-              />
-            )}
-            onPress={() => toggleCamera()}>
-            Flip Camera
-          </Button>
-          <Dialog
-            ref={dialogRef}
-            title={'Scanned QR code'}
-            content={(qrCode) => <Paragraph>Is "{qrCode}" your code?</Paragraph>}
-            actions={[
-              {
-                onPress: () => {
-                  setCode('');
-                  qrRef.current?.reactivate();
-                },
-                title: 'No',
-              },
-              {
-                onPress: (qrCode: string) => {
-                  console.log(`got code ${qrCode}`);
-                  addServer(url, qrCode)
-                    .then((serverSize) => {
-                      if (serverSize > 1) {
-                        navigation.navigate('ServerList');
-                      }
-                      console.log('success');
-                    })
-                    .catch(() => {
-                      qrRef.current?.reactivate();
-                    });
-                },
-                title: 'Yes',
-              },
-            ]}
-          />
+          {/*<QRCodeScanner*/}
+          {/*  ref={qrRef}*/}
+          {/*  topViewStyle={{*/}
+          {/*    flex: 1,*/}
+          {/*  }}*/}
+          {/*  cameraProps={{*/}
+          {/*    autoFocus: 'on',*/}
+          {/*    // barCodeTypes: ['qr'],*/}
+          {/*  }}*/}
+          {/*  cameraType={camera}*/}
+          {/*  showMarker={true}*/}
+          {/*  vibrate={true}*/}
+          {/*  onRead={(e) => {*/}
+          {/*    console.log(e);*/}
+          {/*    dialogRef.current?.showDialog(e.data);*/}
+          {/*  }}*/}
+          {/*/>*/}
+          {/*<Button*/}
+          {/*  icon={({size, color}: {size: number; color: string}) => (*/}
+          {/*    <Image*/}
+          {/*      source={require('../../../../assets/camera-flip.png')}*/}
+          {/*      style={{width: size, height: size, tintColor: color}}*/}
+          {/*    />*/}
+          {/*  )}*/}
+          {/*  onPress={() => toggleCamera()}>*/}
+          {/*  Flip Camera*/}
+          {/*</Button>*/}
+          {/*<Dialog*/}
+          {/*  ref={dialogRef}*/}
+          {/*  title={'Scanned QR code'}*/}
+          {/*  content={(qrCode) => <Paragraph>Is "{qrCode}" your code?</Paragraph>}*/}
+          {/*  actions={[*/}
+          {/*    {*/}
+          {/*      onPress: () => {*/}
+          {/*        setCode('');*/}
+          {/*        qrRef.current?.reactivate();*/}
+          {/*      },*/}
+          {/*      title: 'No',*/}
+          {/*    },*/}
+          {/*    {*/}
+          {/*      onPress: (qrCode: string) => {*/}
+          {/*        console.log(`got code ${qrCode}`);*/}
+          {/*        addServer(url, qrCode)*/}
+          {/*          .then((serverSize) => {*/}
+          {/*            if (serverSize > 1) {*/}
+          {/*              navigation.navigate('ServerList');*/}
+          {/*            }*/}
+          {/*            console.log('success');*/}
+          {/*          })*/}
+          {/*          .catch(() => {*/}
+          {/*            qrRef.current?.reactivate();*/}
+          {/*          });*/}
+          {/*      },*/}
+          {/*      title: 'Yes',*/}
+          {/*    },*/}
+          {/*  ]}*/}
+          {/*/>*/}
           {loading && <LoadingOverlay />}
         </View>
       </BaseScreen>

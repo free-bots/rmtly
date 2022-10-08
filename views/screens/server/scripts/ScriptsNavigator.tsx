@@ -7,8 +7,8 @@ const Stack = createStackNavigator();
 export const ScriptsNavigator = () => {
   const {headerVisible} = useContext(NavigationHeaderContext);
   return (
-    <Stack.Navigator initialRouteName="Scripts" headerMode={headerVisible ? 'none' : 'screen'}>
-      <Stack.Screen name="Scripts" component={ScriptsScreen} />
+    <Stack.Navigator initialRouteName="Scripts">
+      <Stack.Screen name="Scripts" component={ScriptsScreen} options={{headerShown: false}} />
     </Stack.Navigator>
   );
 };

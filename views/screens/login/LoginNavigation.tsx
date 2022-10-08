@@ -12,7 +12,9 @@ export const LoginNavigator = () => {
   return (
     <Stack.Navigator
       initialRouteName={serverState.servers.length ? 'ServerConnection' : 'Welcome'}
-      headerMode={'screen'}>
+      screenOptions={{
+        headerMode: 'screen',
+      }}>
       <Stack.Screen name="Welcome" component={Welcome} />
       <Stack.Screen name="ServerConnection" component={ServerConnection} />
       <Stack.Screen name="ServerAuthentication" component={ServerAuthentication} />
