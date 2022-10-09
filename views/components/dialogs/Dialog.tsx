@@ -22,6 +22,8 @@ export class Dialog extends Component<DialogProps, DialogState> {
     };
   }
 
+  public isVisible = () => this.state.visible;
+
   public showDialog = (data: any) => this.setState({visible: true, data});
 
   public hideDialog = () => this.setState({visible: false});
