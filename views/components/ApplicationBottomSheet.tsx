@@ -2,7 +2,7 @@ import React, {Component, useContext} from 'react';
 import {View} from 'react-native';
 import {ApplicationEntry} from '../../models/ApplicationEntry';
 import {FallbackImage} from './FallbackImage';
-import ActionSheet from 'react-native-actions-sheet';
+import ActionSheet, {ActionSheetRef} from 'react-native-actions-sheet';
 import Button from './buttons/Button';
 import {ThemeContext, ThemeState} from '../../contexts/ThemeContext';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -13,7 +13,7 @@ import {ApplicationContext} from '../../services/ApplicationContext';
 import {ExecuteRequest} from '../../models/Request.model';
 import {ExecuteResponse} from '../../models/Response.model';
 
-const delays: {label: string; value: number}[] = [0, 3, 5, 10, 30, 60].map((time) => ({
+const delays: {label: string; value: number}[] = [0, 3, 5, 10, 30, 60].map(time => ({
   label: `${time} Sec`,
   value: time * 1000,
 }));
@@ -27,28 +27,28 @@ export interface ApplicationBottomSheetProps extends ThemeState {
 export interface ApplicationBottomSheetState {
   application: ApplicationEntry | null;
   executeDelay: number;
+  dropDownOpen: boolean;
 }
 
-// todo bottomSheet not showing
-
 class ApplicationBottomSheet extends Component<ApplicationBottomSheetProps, ApplicationBottomSheetState> {
-  actionSheetRef: any = React.createRef<ActionSheet>();
+  actionSheetRef: any = React.createRef<ActionSheetRef>();
 
   constructor(props: ApplicationBottomSheetProps) {
     super(props);
     this.state = {
       application: null,
       executeDelay: 0,
+      dropDownOpen: false,
     };
   }
 
   open = (application: ApplicationEntry) => {
-    this.setState({application: application});
-    this.actionSheetRef.current?.setModalVisible(true);
+    this.setState({application: application, dropDownOpen: false});
+    this.actionSheetRef.current?.show();
   };
 
   close = () => {
-    this.actionSheetRef.current?.setModalVisible(false);
+    this.actionSheetRef.current?.hide();
   };
 
   execute = () => {
@@ -62,16 +62,19 @@ class ApplicationBottomSheet extends Component<ApplicationBottomSheetProps, Appl
         executeDelay: executeDelay,
       })
       .then(() => {})
-      .catch((error) => console.error(error));
+      .catch(error => console.error(error));
   };
 
   render() {
     const theme = this.props.isLightTheme ? this.props.light : this.props.dark;
+    const dropDownTheme = (this.props.isLightTheme ? 'LIGHT' : 'DARK') as any;
+
     const {application} = this.state;
     return (
       <ActionSheet
-        indicatorColor={theme.colors.primary}
-        bounceOnOpen={false}
+        indicatorStyle={{
+          backgroundColor: theme.colors.primary,
+        }}
         containerStyle={{
           backgroundColor: theme.colors.background,
         }}
@@ -80,10 +83,8 @@ class ApplicationBottomSheet extends Component<ApplicationBottomSheetProps, Appl
         onClose={() => {}}>
         <View
           style={{
-            flex: 1,
-            flexDirection: 'column',
             justifyContent: 'space-between',
-            height: 350,
+            height: 250,
           }}>
           {application && (
             <>
@@ -100,38 +101,41 @@ class ApplicationBottomSheet extends Component<ApplicationBottomSheetProps, Appl
                 </Text>
               </View>
               <DropDownPicker
-                arrowColor={theme.colors.primary}
-                showArrow={true}
-                dropDownMaxHeight={100}
+                theme={dropDownTheme}
+                open={this.state.dropDownOpen}
+                setOpen={open => {
+                  this.setState({dropDownOpen: open as any});
+                }}
+                listItemContainerStyle={{
+                  backgroundColor: theme.colors.background,
+                }}
+                listParentContainerStyle={{
+                  backgroundColor: theme.colors.background,
+                  borderColor: theme.colors.primary,
+                }}
+                listItemLabelStyle={{
+                  color: theme.colors.text,
+                }}
+                selectedItemContainerStyle={{
+                  backgroundColor: theme.colors.primary,
+                }}
+                tickIconStyle={{
+                  display: 'none',
+                }}
+                dropDownContainerStyle={{
+                  borderColor: theme.colors.primary,
+                  width: '98%',
+                }}
                 items={delays}
-                autoScrollToDefaultValue={true}
-                defaultValue={this.state.executeDelay}
+                // autoScrollToDefaultValue={true}
+                value={this.state.executeDelay}
                 style={{
                   backgroundColor: theme.colors.background,
                   borderColor: theme.colors.background,
                 }}
-                dropDownStyle={{
-                  borderTopLeftRadius: theme.roundness,
-                  borderTopRightRadius: theme.roundness,
-                  borderBottomLeftRadius: theme.roundness,
-                  borderBottomRightRadius: theme.roundness,
-                  backgroundColor: theme.colors.background,
-                  borderColor: theme.colors.primary,
-                }}
                 containerStyle={{height: 50, margin: 5}}
-                itemStyle={{
-                  backgroundColor: theme.colors.background,
-                  justifyContent: 'flex-start',
-                }}
-                labelStyle={{
-                  color: theme.colors.primary,
-                }}
-                selectedLabelStyle={{
-                  color: theme.colors.primary,
-                }}
-                onChangeItem={(item) => {
-                  console.log(item);
-                  this.setState({executeDelay: Number(item.value)});
+                setValue={callback => {
+                  this.setState(state => ({...state, executeDelay: callback(state.executeDelay)}));
                 }}
               />
               <Button
