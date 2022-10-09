@@ -8,11 +8,13 @@ import {ServerContext} from '../../../../contexts/ServerContext';
 import {Server} from '../../../../models/persistence/Server';
 import {Dialog} from '../../../components/dialogs/Dialog';
 import {LoadingOverlay} from '../../../components/loading/LoadingOverlay';
+import {LoginContext} from '../../../../contexts/LoginContext';
 
 export const ConnectionInfo = ({route, navigation}: any) => {
   const {dark, light, isLightTheme} = useContext(ThemeContext);
   const theme = isLightTheme ? light : dark;
 
+  const {loggedOut} = useContext(LoginContext);
   const {deleteById, setCurrentServer, serverState} = useContext(ServerContext);
   const [loading, setLoading] = useState(false);
 
@@ -80,6 +82,8 @@ export const ConnectionInfo = ({route, navigation}: any) => {
                       setLoading(false);
                       if (serverState.servers?.length > 0) {
                         navigation.goBack();
+                      } else {
+                        loggedOut();
                       }
                     })
                     .catch(() => {
