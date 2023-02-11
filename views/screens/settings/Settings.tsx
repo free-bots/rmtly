@@ -22,11 +22,14 @@ export const Settings = ({navigation}: any) => {
           <List.Item
             title={`Connected Servers: ${serverState.servers.length}`}
             description={'Click to manage a singe server'}
+            style={{padding: 5}}
             left={(props) => (
               <List.Icon
                 {...props}
                 icon="file-tree-outline"
                 style={{
+                  width: 40,
+                  height: 40,
                   borderRadius: 100,
                   backgroundColor: theme.colors.primary,
                 }}

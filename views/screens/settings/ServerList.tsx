@@ -45,7 +45,7 @@ export const ServerList = ({navigation}: any) => {
           }}>
           <FlatList
             // scrollEventThrottle={16}
-            onScroll={(event) => {
+            onScroll={event => {
               onScroll(event);
             }}
             contentContainerStyle={serverState.servers?.length ? {} : {flex: 1}}
@@ -56,7 +56,7 @@ export const ServerList = ({navigation}: any) => {
                   justifyContent: 'center',
                   alignSelf: 'center',
                 }}>
-                <Empty/>
+                <Empty />
               </View>
             )}
             refreshing={loading}
@@ -65,37 +65,37 @@ export const ServerList = ({navigation}: any) => {
             }}
             data={serverState.servers}
             renderItem={(info: ListRenderItemInfo<Server>) => (
-              <View>
-                <List.Item
-                  title={info.item.name}
-                  description={`Url: ${info.item.url}`}
-                  left={(props) => (
-                    <List.Icon
-                      {...props}
-                      icon="file-tree-outline"
+              <List.Item
+                title={info.item.name}
+                description={`Url: ${info.item.url}`}
+                style={{padding: 5}}
+                left={props => (
+                  <List.Icon
+                    {...props}
+                    icon="file-tree-outline"
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 100,
+                      backgroundColor: theme.colors.primary,
+                    }}
+                  />
+                )}
+                right={() =>
+                  info.item.id === serverState.currentServer?.id ? (
+                    <Chip
+                      icon="information"
                       style={{
-                        borderRadius: 100,
-                        backgroundColor: theme.colors.primary,
-                      }}
-                    />
-                  )}
-                  right={() =>
-                    info.item.id === serverState.currentServer?.id ? (
-                      <Chip
-                        icon="information"
-                        style={{
-                          height: '60%',
-                          alignSelf: 'center',
-                        }}>
-                        Current
-                      </Chip>
-                    ) : null
-                  }
-                  onPress={() => {
-                    navigateToServer(info.item);
-                  }}
-                />
-              </View>
+                        alignSelf: 'center',
+                      }}>
+                      Current
+                    </Chip>
+                  ) : null
+                }
+                onPress={() => {
+                  navigateToServer(info.item);
+                }}
+              />
             )}
             keyExtractor={(item, index) => item?.id || String(index)}
           />

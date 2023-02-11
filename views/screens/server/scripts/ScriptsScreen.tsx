@@ -61,17 +61,17 @@ export const ScriptsScreen = ({navigation}: any) => {
 
     setLoading(true);
     getAllScripts()
-      .then((fetchedScripts) => {
+      .then(fetchedScripts => {
         if (serverState.currentServer?.id !== serverId) {
           setLoading(false);
           return;
         }
         if (isAuthenticated) {
           setLoading(false);
-          setScripts((prevState) =>
-            fetchedScripts.map((fetchedScript) => {
+          setScripts(prevState =>
+            fetchedScripts.map(fetchedScript => {
               const existingScript = prevState?.find(
-                (currentScript) => currentScript.script?.name === fetchedScript.name,
+                currentScript => currentScript.script?.name === fetchedScript.name,
               );
 
               if (existingScript) {
@@ -83,7 +83,7 @@ export const ScriptsScreen = ({navigation}: any) => {
           );
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.error(error);
         if (isAuthenticated) {
           setLoading(false);
@@ -96,8 +96,8 @@ export const ScriptsScreen = ({navigation}: any) => {
       return;
     }
 
-    setScripts((prevState) =>
-      prevState?.map((currentScript) => {
+    setScripts(prevState =>
+      prevState?.map(currentScript => {
         if (currentScript.script.name === script.name) {
           return {...currentScript, loading: true};
         }
@@ -107,8 +107,8 @@ export const ScriptsScreen = ({navigation}: any) => {
 
     await executeScript(script.name, request)
       .then(() => {
-        setScripts((prevState) =>
-          prevState?.map((currentScript) => {
+        setScripts(prevState =>
+          prevState?.map(currentScript => {
             if (currentScript.script.name === script.name) {
               return {...currentScript, loading: false};
             }
@@ -116,11 +116,11 @@ export const ScriptsScreen = ({navigation}: any) => {
           }),
         );
       })
-      .catch((error) => {
+      .catch(error => {
         console.error(error);
         if (isAuthenticated) {
-          setScripts((prevState) =>
-            prevState?.map((currentScript) => {
+          setScripts(prevState =>
+            prevState?.map(currentScript => {
               if (currentScript.script.name === script.name) {
                 return {...currentScript, loading: false};
               }
@@ -160,11 +160,14 @@ export const ScriptsScreen = ({navigation}: any) => {
                 <List.Item
                   title={info.item.script?.name}
                   description={info.item.script?.description}
-                  left={(props) => (
+                  style={{padding: 5}}
+                  left={props => (
                     <List.Icon
                       {...props}
                       icon="file-tree-outline"
                       style={{
+                        width: 40,
+                        height: 40,
                         borderRadius: 100,
                         backgroundColor: theme.colors.primary,
                       }}

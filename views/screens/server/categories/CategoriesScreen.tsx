@@ -51,7 +51,7 @@ export const CategoriesScreen = ({navigation}: any) => {
 
     setLoading(true);
     sortApplicationBy(SortKey.CATEGORY)
-      .then((fetchedApplications) => {
+      .then(fetchedApplications => {
         if (serverState.currentServer?.id !== serverId) {
           setLoading(false);
           return;
@@ -62,7 +62,7 @@ export const CategoriesScreen = ({navigation}: any) => {
           setSortedApplications(fetchedApplications);
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.error(error);
         if (isAuthenticated) {
           setLoading(false);
@@ -105,24 +105,25 @@ export const CategoriesScreen = ({navigation}: any) => {
             }}
             data={sortedApplications?.values}
             renderItem={(info: ListRenderItemInfo<SortedValue>) => (
-              <View>
-                <List.Item
-                  title={info.item.sortedValue}
-                  left={(props) => (
-                    <List.Icon
-                      {...props}
-                      icon="file-tree-outline"
-                      style={{
-                        borderRadius: 100,
-                        backgroundColor: theme.colors.primary,
-                      }}
-                    />
-                  )}
-                  onPress={() => {
-                    navigateToCategory(info.item);
-                  }}
-                />
-              </View>
+              <List.Item
+                title={info.item.sortedValue}
+                style={{padding: 5}}
+                left={props => (
+                  <List.Icon
+                    {...props}
+                    icon="file-tree-outline"
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 100,
+                      backgroundColor: theme.colors.primary,
+                    }}
+                  />
+                )}
+                onPress={() => {
+                  navigateToCategory(info.item);
+                }}
+              />
             )}
             keyExtractor={(item, index) => item.sortedValue || String(index)}
           />
